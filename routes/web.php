@@ -33,8 +33,18 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Route::group(['prefix'=>'admin', 'middleware'=>['isAdmin','auth','PreventBackHistory']], function(){
         Route::get('dashboard',[AdminController::class,'index'])->name('admin.dashboard');
-        Route::get('profile',[AdminController::class,'profile'])->name('admin.profile');
-        Route::get('settings',[AdminController::class,'settings'])->name('admin.settings');
+        // Route::get('addemployee',[AdminController::class,'addemployee'])->name('admin.addemployee');
+        Route::get('addemployee',[AdminController::class,'addemployee'])->name('addemployee');
+        Route::get('manageemployee',[AdminController::class,'manageemployee'])->name('manageemployee');
+
+        Route::get('adddepartment',[AdminController::class,'adddepartment'])->name('adddepartment');
+        Route::get('managedepartments',[AdminController::class,'managedepartments'])->name('managedepartments');
+
+        Route::get('allvacations',[AdminController::class,'allvacations'])->name('allvacations');
+        Route::get('pendingvacations',[AdminController::class,'pendingvacations'])->name('pendingvacations');
+        Route::get('approvedvacations',[AdminController::class,'approvedvacations'])->name('approvedvacations');
+        Route::get('notapprovedvacations',[AdminController::class,'notapprovedvacations'])->name('notapprovedvacations');
+
 
 
         Route::post('update-profile-info',[AdminController::class,'updateInfo'])->name('adminUpdateInfo');
