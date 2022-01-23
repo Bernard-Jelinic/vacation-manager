@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ManagerController;
 use App\Http\Controllers\UserController;
@@ -18,8 +19,20 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 
+// Route::get('/', function () {
+//     return view('welcome');
+// });
+
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.login');
+});
+
+Route::get('/login', function () {
+    return view('auth.login');
+});
+
+Route::get('/register', function () {
+    return view('register');
 });
 
 //ovo spriječava da kada sam prijavljen da se vratim na login page sa back-om
@@ -33,12 +46,16 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Route::group(['prefix'=>'admin', 'middleware'=>['isAdmin','auth','PreventBackHistory']], function(){
         Route::get('dashboard',[AdminController::class,'index'])->name('admin.dashboard');
+
         // Route::get('addemployee',[AdminController::class,'addemployee'])->name('admin.addemployee');
-        Route::get('addemployee',[AdminController::class,'addemployee'])->name('addemployee');
-        Route::get('manageemployee',[AdminController::class,'manageemployee'])->name('manageemployee');
 
         Route::get('adddepartment',[AdminController::class,'adddepartment'])->name('adddepartment');
+        Route::post('adddepartment',[AdminController::class,'adddepartment'])->name('adddepartment');
         Route::get('managedepartments',[AdminController::class,'managedepartments'])->name('managedepartments');
+
+        Route::get('addemployee',[AdminController::class,'addemployee'])->name('addemployee');
+        Route::post('addemployee',[AdminController::class,'addemployee'])->name('addemployee');
+        Route::get('manageemployee',[AdminController::class,'manageemployee'])->name('manageemployee');
 
         Route::get('allvacations',[AdminController::class,'allvacations'])->name('allvacations');
         Route::get('pendingvacations',[AdminController::class,'pendingvacations'])->name('pendingvacations');

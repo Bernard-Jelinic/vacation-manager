@@ -135,7 +135,9 @@
             <ul class="sidebar-menu" id="nav-accordion">
             
                 <p class="centered"><a href="profile.html"><img src="assets/img/ui-sam.jpg" class="img-circle" width="60"></a></p>
+
                 <h5 class="centered">{{ Auth::user()->name }}</h5>
+                {{-- ovo odkomentiraj --}}
                 
             {{-- <a  href="{{route('admin/dashboard')}}">Home</a> --}}
 
@@ -148,11 +150,20 @@
                 </li>
                 
                 <li class="sub-menu">
+                    {{-- <a href="{{route('department')}}" >
+                        <i class="fa fa-th"></i>
+                        <span>Department</span>
+                    </a> --}}
                     <a href="javascript:;" >
                         <i class="fa fa-th"></i>
                         <span>Department</span>
                     </a>
                     <ul class="sub">
+
+                        {{-- <a href="{{url('admin/posts/add')}}">
+                            <button class="btn btn-primary btn-sm" style="float:right"><i class="fa fa-plus"></i> Add Post</button>
+                        </a> --}}
+
                         <li><a href="{{route('adddepartment')}}">Add Department</a></li>
                         <li><a href="{{route('managedepartments')}}">Manage Departments</a></li>
                     </ul>
@@ -165,6 +176,7 @@
                     </a>
                     <ul class="sub">
                         <li><a href="{{route('addemployee')}}">Add Employee</a></li>
+                        {{-- <li><a href="{{route('register')}}">Add Employee</a></li> --}}
                         <li><a href="{{route('manageemployee')}}">Manage Employee</a></li>
                     </ul>
                 </li>
@@ -210,7 +222,9 @@
             @yield('addemployee')
             @yield('manageemployee')
 
+            {{-- @yield('department') --}}
             @yield('adddepartment')
+            {{-- @yield('register') --}}
             @yield('managedepartments')
 
             @yield('allvacations')

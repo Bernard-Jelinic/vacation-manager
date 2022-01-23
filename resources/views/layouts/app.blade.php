@@ -129,7 +129,7 @@
 
 
     <!-- END BOOTSTRAP -->
-    @if (Auth::check()==11)
+    {{-- @if (Auth::check()==11)
     <h1>someone is loged in</h1>
     @endif
     @if (Auth::check()==11)
@@ -152,7 +152,7 @@
 
             return false;
             });
-        </script>
+        </script> --}}
         
         {{-- <script type="application/javascript">
             $(document).ready(function () {
@@ -188,7 +188,7 @@
                 console.log('nav ' + nav + ' to: ' + to.month + '/' + to.year);
             }
         </script> --}}
-    @endif
+    {{-- @endif --}}
 
 </body>
 </html>
