@@ -47,10 +47,6 @@ class AdminController extends Controller
        return view('dashboards.admins.manageemployee');
    }
 
-
-
-
-
     function adddepartment(Request $req, $type = '',$id = ''){
 
         if($req->method() == 'POST'){
@@ -114,6 +110,8 @@ class AdminController extends Controller
 
             $department->where('id',$id)->update($data);
 
+            return redirect('admin/managedepartments');
+
         }
 
     //print_r($req->route()->id);
@@ -145,8 +143,6 @@ class AdminController extends Controller
 
         $id = $req->route()->id;
 
-        print_r($id);
-
         if($req->method() == 'POST'){
 
             $department = new Department();
@@ -154,6 +150,8 @@ class AdminController extends Controller
             $row = $department->find($id);
 
             $row->delete();
+
+            return redirect('admin/managedepartments');
             
         }
 

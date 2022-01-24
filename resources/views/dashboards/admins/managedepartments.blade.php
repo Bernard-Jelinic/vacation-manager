@@ -26,18 +26,21 @@
                                     <td>
 
                                         {{-- <a href="{{route('edit/'.$department->department_id)}}"> --}}
+                                        
                                         <a href="{{url('admin/managedepartments/edit/'.$department->department_id)}}">
                                             <button class="btn-sm btn btn-success"><i class="fa fa-edit"></i> Edit</button>
                                         </a>
-                                        <form action="" method="post">
-                                            <a href="{{url('admin/managedepartments/delete/'.$department->department_id)}}">
+                                            <form action="{{url('admin/managedepartments/delete/'.$department->department_id)}}" method="post">
+                                            @csrf
+                                            {{-- <a href="{{url('admin/managedepartments/delete/'.$department->department_id)}}"> --}}
                                                 <button type="submit" class="btn-sm btn btn-warning"><i class="fa fa-times"></i> Delete</button>
-                                            </a>
+                                            {{-- </a> --}}
                                                 {{-- <input class="btn btn-danger" style="float:right;" type="submit" value="Delete"> --}}
                                                 {{-- <a href="{{url('admin/managedepartments/delete/'.$department->department_id)}}">
                                                     <input class="btn btn-success" type="button" value="Back">
                                                 </a> --}}
                                         </form>
+
 
                                     </td>
                                 </tr>
