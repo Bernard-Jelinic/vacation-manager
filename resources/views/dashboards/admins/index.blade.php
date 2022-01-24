@@ -165,7 +165,8 @@
                         </a> --}}
 
                         <li><a href="{{route('adddepartment')}}">Add Department</a></li>
-                        <li><a href="{{route('managedepartments')}}">Manage Departments</a></li>
+                        {{-- <li><a href="{{route('managedepartments')}}">Manage Departments</a></li> --}}
+                        <li><a href="{{url('admin/managedepartments')}}">Manage Departments</a></li>
                     </ul>
                 </li>
                 
@@ -226,6 +227,7 @@
             @yield('adddepartment')
             {{-- @yield('register') --}}
             @yield('managedepartments')
+            @yield('editdepartments')
 
             @yield('allvacations')
             @yield('pendingvacations')

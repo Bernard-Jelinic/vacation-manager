@@ -94,6 +94,73 @@ class AdminController extends Controller
         return view('dashboards.admins.managedepartments', ['departments' => $departments]);
    }
 
+   function editdepartment(Request $req){
+
+        $id = $req->route()->id;
+
+        if($req->method() == 'POST'){
+
+            $department = new Department();
+
+            $validated = $req->validate([
+
+                'name' => 'required|string',
+                'manager_id' => 'required|string',
+            ]);
+
+            $data['name'] = $req->input('name');
+            $data['manager_id'] = $req->input('manager_id');
+            $data['updated_at'] = date("Y-m-d H:i:s");
+
+            $department->where('id',$id)->update($data);
+
+        }
+
+    //print_r($req->route()->id);
+
+//"SELECT departments.id AS department_id, departments.name AS department_name, departments.manager_id,users.name AS user_name, users.last_name FROM departments JOIN users ON departments.manager_id = users.id";
+
+
+    // $query = "SELECT * FROM departments WHERE id={$req->route()->id}";
+    $query = "SELECT departments.*,users.name AS user_name, users.last_name AS user_last_name, users.role AS user_role FROM departments JOIN users ON departments.manager_id = users.id WHERE departments.id ={$id}";
+
+    $department = DB::select($query);
+
+    $query_managers = "SELECT id, name, last_name FROM users WHERE role='manager'";
+
+    $managers = DB::select($query_managers);
+
+    //print_r($department);
+
+    //print_r($managers);
+
+    //print_r($query);
+
+    return view('dashboards.admins.editdepartment', ['department' => $department, 'managers' => $managers]);
+    //return view('dashboards.admins.editdepartments');
+
+   }
+
+   function deletedepartment(Request $req){
+
+        $id = $req->route()->id;
+
+        print_r($id);
+
+        if($req->method() == 'POST'){
+
+            $department = new Department();
+
+            $row = $department->find($id);
+
+            $row->delete();
+            
+        }
+
+        //return view('dashboards.admins.managedepartments');
+
+   }
+
    function allvacations(){
        return view('dashboards.admins.allvacations');
    }

@@ -3,7 +3,7 @@
 @section('dashboard')
 <div class="row">
     <div class="col-lg-9 main-chart">
-    <h1>Hello ADMIN, wecome to the vacation manager</h1>
+    <h1>Hello admin {{Auth::user()->name}}, welcome to the vacation manager</h1>
     </div>
     
     
