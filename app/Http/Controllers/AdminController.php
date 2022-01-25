@@ -12,8 +12,10 @@ use App\Models\User;
 class AdminController extends Controller
 {
     function index(){
+
         return view('dashboards.admins.dashboard');
-   }
+
+    }
 
    function addemployee(Request $req){
 
@@ -39,12 +41,58 @@ class AdminController extends Controller
             'updated_at' => $date
         ]);
 
+        return redirect('admin/manageemployee');
+
     }
+
     return view('dashboards.admins.addemployee');
+
    }
 
-   function manageemployee(){
-       return view('dashboards.admins.manageemployee');
+    function manageemployee(){
+
+        $query = "SELECT id, name, last_name, email FROM users ORDER BY id";
+
+        $users = DB::select($query);
+
+        return view('dashboards.admins.manageemployee', ['users' => $users]);
+
+    }
+
+    function editemployee(Request $req){
+
+        $id = $req->route()->id;
+        
+        if ($req->method() == "POST") {
+
+            return redirect('admin/manageemployee');
+
+        }
+
+        $query = "SELECT id, name, last_name, role, email FROM users WHERE id ={$id}";
+
+        $employee = DB::select($query);
+
+        return view('dashboards.admins.editemployee', ['employee' => $employee]);
+
+    }
+
+    function deleteemployee(Request $req){
+
+        $id = $req->route()->id;
+
+        if($req->method() == 'POST'){
+
+            $user = new User();
+
+            $row = $user->find($id);
+
+            $row->delete();
+
+            return redirect('admin/manageemployee');
+            
+        }
+
    }
 
     function adddepartment(Request $req, $type = '',$id = ''){
@@ -54,7 +102,6 @@ class AdminController extends Controller
             $department = new Department();
 
             $validated = $req->validate([
-
                 'name' => 'required|string',
                 'manager_id' => 'required|string',
             ]);
@@ -64,33 +111,31 @@ class AdminController extends Controller
 
             $department->insert($data);
 
+            return redirect('admin/managedepartments');
+
         }
 
-            $query = "SELECT id,name FROM users WHERE role = 'manager' ORDER BY id DESC";
-            // $query = "SELECT id,name FROM users ORDER BY id DESC";
-            $managers = DB::select($query);
+        $query = "SELECT id,name FROM users WHERE role = 'manager' ORDER BY id DESC";
 
-            return view('dashboards.admins.adddepartment',[
-                'managers' => $managers,
-            ]);
-            //return view('dashboards.admins.adddepartment');
+        $managers = DB::select($query);
+
+        return view('dashboards.admins.adddepartment',[
+            'managers' => $managers,
+        ]);
+
    }
 
-   function managedepartments(){
+    function managedepartments(){
 
-        // $query = "SELECT * FROM departments ORDER BY id";
-        // $query = "SELECT departments.*,users.name FROM departments JOIN users ON departments.manager_id = users.id ORDER BY id limit 1";
         $query = "SELECT departments.id AS department_id, departments.name AS department_name, departments.manager_id,users.name AS user_name, users.last_name FROM departments JOIN users ON departments.manager_id = users.id";
-        // $query = "SELECT ";
 
         $departments = DB::select($query);
 
-        //print_r($departments);
-
         return view('dashboards.admins.managedepartments', ['departments' => $departments]);
-   }
 
-   function editdepartment(Request $req){
+    }
+
+    function editdepartment(Request $req){
 
         $id = $req->route()->id;
 
@@ -99,7 +144,6 @@ class AdminController extends Controller
             $department = new Department();
 
             $validated = $req->validate([
-
                 'name' => 'required|string',
                 'manager_id' => 'required|string',
             ]);
@@ -114,32 +158,19 @@ class AdminController extends Controller
 
         }
 
-    //print_r($req->route()->id);
+        $query = "SELECT departments.*,users.name AS user_name, users.last_name AS user_last_name, users.role AS user_role FROM departments JOIN users ON departments.manager_id = users.id WHERE departments.id ={$id}";
 
-//"SELECT departments.id AS department_id, departments.name AS department_name, departments.manager_id,users.name AS user_name, users.last_name FROM departments JOIN users ON departments.manager_id = users.id";
+        $department = DB::select($query);
 
+        $query_managers = "SELECT id, name, last_name FROM users WHERE role='manager'";
 
-    // $query = "SELECT * FROM departments WHERE id={$req->route()->id}";
-    $query = "SELECT departments.*,users.name AS user_name, users.last_name AS user_last_name, users.role AS user_role FROM departments JOIN users ON departments.manager_id = users.id WHERE departments.id ={$id}";
+        $managers = DB::select($query_managers);
 
-    $department = DB::select($query);
+        return view('dashboards.admins.editdepartment', ['department' => $department, 'managers' => $managers]);
 
-    $query_managers = "SELECT id, name, last_name FROM users WHERE role='manager'";
+    }
 
-    $managers = DB::select($query_managers);
-
-    //print_r($department);
-
-    //print_r($managers);
-
-    //print_r($query);
-
-    return view('dashboards.admins.editdepartment', ['department' => $department, 'managers' => $managers]);
-    //return view('dashboards.admins.editdepartments');
-
-   }
-
-   function deletedepartment(Request $req){
+    function deletedepartment(Request $req){
 
         $id = $req->route()->id;
 
@@ -155,9 +186,7 @@ class AdminController extends Controller
             
         }
 
-        //return view('dashboards.admins.managedepartments');
-
-   }
+    }
 
    function allvacations(){
        return view('dashboards.admins.allvacations');
@@ -171,10 +200,4 @@ class AdminController extends Controller
    function notapprovedvacations(){
        return view('dashboards.admins.notapprovedvacations');
    }
-//    function profile(){
-//        return view('dashboards.admins.profile');
-//    }
-//    function settings(){
-//        return view('dashboards.admins.settings');
-//    }
 }

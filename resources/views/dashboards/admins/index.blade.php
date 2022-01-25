@@ -222,10 +222,9 @@
 
             @yield('addemployee')
             @yield('manageemployee')
+            @yield('editemployee')
 
-            {{-- @yield('department') --}}
             @yield('adddepartment')
-            {{-- @yield('register') --}}
             @yield('managedepartments')
             @yield('editdepartments')
 

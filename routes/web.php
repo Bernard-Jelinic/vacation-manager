@@ -51,18 +51,17 @@ Route::group(['prefix'=>'admin', 'middleware'=>['isAdmin','auth','PreventBackHis
 
         Route::get('adddepartment',[AdminController::class,'adddepartment'])->name('adddepartment');
         Route::post('adddepartment',[AdminController::class,'adddepartment'])->name('adddepartment');
+        Route::get('managedepartments',[AdminController::class,'managedepartments'])->name('managedepartments');
         Route::get('managedepartments/edit/{id}',[AdminController::class,'editdepartment']);
         Route::post('managedepartments/edit/{id}',[AdminController::class,'editdepartment']);
-
         Route::post('managedepartments/delete/{id}',[AdminController::class,'deletedepartment']);
-
-        Route::get('managedepartments',[AdminController::class,'managedepartments'])->name('managedepartments');
-        // Route::get('managedepartments/edit/{id}',[AdminController::class,'editdepartments']);ovo radi samo sa url metodom
-        
 
         Route::get('addemployee',[AdminController::class,'addemployee'])->name('addemployee');
         Route::post('addemployee',[AdminController::class,'addemployee'])->name('addemployee');
         Route::get('manageemployee',[AdminController::class,'manageemployee'])->name('manageemployee');
+        Route::get('manageemployee/edit/{id}',[AdminController::class,'editemployee']);
+        Route::post('manageemployee/edit/{id}',[AdminController::class,'editemployee']);
+        Route::post('manageemployee/delete/{id}',[AdminController::class,'deleteemployee']);
 
         Route::get('allvacations',[AdminController::class,'allvacations'])->name('allvacations');
         Route::get('pendingvacations',[AdminController::class,'pendingvacations'])->name('pendingvacations');
