@@ -10,7 +10,7 @@
         <table class="table table-striped table-hover">
 
             <thead>
-                <tr><th>Name</th><th>Last name</th><th>Email</th></tr>
+                <tr><th>Name</th><th>Last name</th><th>Email</th><th>Action</th></tr>
             </thead>
 
             <tbody>

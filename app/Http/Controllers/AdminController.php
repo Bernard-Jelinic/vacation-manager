@@ -17,7 +17,7 @@ class AdminController extends Controller
 
     }
 
-   function addemployee(Request $req){
+    function addemployee(Request $req){
 
     if($req->method() == 'POST'){
 
@@ -47,7 +47,7 @@ class AdminController extends Controller
 
     return view('dashboards.admins.addemployee');
 
-   }
+    }
 
     function manageemployee(){
 

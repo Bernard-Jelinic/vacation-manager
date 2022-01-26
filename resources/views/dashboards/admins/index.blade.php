@@ -134,10 +134,10 @@
             <!-- sidebar menu start-->
             <ul class="sidebar-menu" id="nav-accordion">
             
-                <p class="centered"><a href="profile.html"><img src="assets/img/ui-sam.jpg" class="img-circle" width="60"></a></p>
+                {{-- <p class="centered"><a href="profile.html"><img src="assets/img/ui-sam.jpg" class="img-circle" width="60"></a></p> --}}
 
-                <h5 class="centered">{{ Auth::user()->name }}</h5>
-                {{-- ovo odkomentiraj --}}
+                <h5 class="centered">{{ Auth::user()->name . ' ' . Auth::user()->last_name }}</h5>
+                {{-- <h5 class="centered">{{ Auth::user()->email }}</h5> --}}
                 
             {{-- <a  href="{{route('admin/dashboard')}}">Home</a> --}}
 

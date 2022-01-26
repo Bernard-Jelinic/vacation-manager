@@ -20,17 +20,17 @@
             @csrf
 
             <div class="form-group">
-                <label>Name</label>
+                <label>Name *</label>
                 <input class="form-control" type="text" placeholder="Enter name" name="name" value="{{old('name')}}"/>
             </div>
 
             <div class="form-group">
-                <label>Last Name</label>
+                <label>Last Name *</label>
                 <input class="form-control" type="text" placeholder="Enter last name" name="last_name" value="{{old('last_name')}}"/>
             </div>
 
             <div class="form-group">
-                <label>Users Role</label>
+                <label>Users Role *</label>
                 <select class="form-control" id="role" name="role" required>
                     <option>Select role</option>
                     <option value="admin">Admin</option>
@@ -40,12 +40,12 @@
             </div>
 
             <div class="form-group">
-                <label>Email address</label>
+                <label>Email address *</label>
                 <input class="form-control" type="text" placeholder="Enter email" name="email" value="{{old('email')}}"/>
             </div>
 
             <div class="form-group">
-                <label>Password</label>
+                <label>Password *</label>
                 <input class="form-control" type="password" placeholder="Password" name="password" value="{{old('password')}}"/>
             </div>
 
