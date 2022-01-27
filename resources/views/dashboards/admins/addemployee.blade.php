@@ -15,7 +15,7 @@
                 @endif
             </span>
 
-            <h3>Register User</h3><br>
+            <h3>Register Employee</h3><br>
 
             @csrf
 
@@ -30,7 +30,7 @@
             </div>
 
             <div class="form-group">
-                <label>Users Role *</label>
+                <label>Employees Role *</label>
                 <select class="form-control" id="role" name="role" required>
                     <option>Select role</option>
                     <option value="admin">Admin</option>

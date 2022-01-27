@@ -4,7 +4,7 @@
 
 <style>
     body {
-        background-image: url("https://png.pngtree.com/thumb_back/fw800/back_our/20190620/ourmid/pngtree-summer-beach-summer-vacation-advertising-background-image_162086.jpg");
+        background-image: url("assets/img/pngtree-summer-beach-summer-vacation-advertising-background-image_162086.jpg");
         height: 100vh;
         background-size: cover;
     }

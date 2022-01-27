@@ -10,14 +10,14 @@
         <table class="table table-striped table-hover">
 
             <thead>
-                <tr><th>Name</th><th>Last name</th><th>Email</th><th>Action</th></tr>
+                <tr><th>Name</th><th>Last name</th><th>Role</th><th>Email</th><th>Action</th></tr>
             </thead>
 
             <tbody>
                 @if ($users)
                     @foreach ($users as $user)
 
-                        <tr><td>{{$user->name}}</td><td>{{$user->last_name}}</td><td>{{$user->email}}</td>
+                        <tr><td>{{$user->name}}</td><td>{{$user->last_name}}</td><td>{{$user->role}}</td><td>{{$user->email}}</td>
                             <td>
                         
                                 <a href="{{url('admin/manageemployee/edit/'.$user->id)}}">

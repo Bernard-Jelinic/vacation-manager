@@ -15,26 +15,26 @@
                 @endif
             </span>
 
-            <h3>Edit Department</h3><br>
+            <h3>Edit Employee</h3><br>
 
             @if ($employee)
                 @foreach ($employee as $key)
 
                     <div class="form-group">
-                        <label>User name</label>
-                        <input value="{{$key->name}}" id="name" type="text" class="form-control" placeholder="User name" name="name" required autofocus>
+                        <label>Employee name</label>
+                        <input value="{{$key->name}}" id="name" type="text" class="form-control" placeholder="Employee name" name="name" required autofocus>
                     </div>
 
                     <div class="form-group">
-                        <label>User last name</label>
-                        <input value="{{$key->last_name}}" id="name" type="text" class="form-control" placeholder="User last name" name="name" required autofocus>
+                        <label>Employee last name</label>
+                        <input value="{{$key->last_name}}" id="name" type="text" class="form-control" placeholder="Employee last name" name="last_name" required autofocus>
                     </div>
 
                 @endforeach
             @endif
 
             <div class="form-group">
-                <label>Users Role</label>
+                <label>Employees Role</label>
                 
                 <select class="form-control" id="role" name="role" required>
 
@@ -45,6 +45,16 @@
                     @endforeach
 
                 </select>
+            </div>
+
+            <div class="form-group">
+                <label>Email address</label>
+                <input class="form-control" type="text" placeholder="Enter email" name="email" value="{{$key->email}}"/>
+            </div>
+
+            <div class="form-group">
+                <label>Password</label>
+                <input class="form-control" type="password" placeholder="Password" name="password" value="{{old('password')}}"/>
             </div>
 
             @csrf

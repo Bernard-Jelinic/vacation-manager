@@ -4,10 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Models\Department;
-
 use Illuminate\Support\Facades\Hash;
-use App\Models\User;
 
 class AdminController extends Controller
 {
@@ -30,8 +27,8 @@ class AdminController extends Controller
         ]);
 
         $date = date("Y-m-d H:i:s");
-        $user = new User();
-        $user->insert([
+
+        $data = [
             'name' => $req->input('name'),
             'last_name' => $req->input('last_name'),
             'role' => $req->input('role'),
@@ -39,7 +36,9 @@ class AdminController extends Controller
             'password' => Hash::make($req->input('password')),
             'created_at' => $date,
             'updated_at' => $date
-        ]);
+        ];
+
+        DB::table('users')->insert($data);
 
         return redirect('admin/manageemployee');
 
@@ -51,7 +50,7 @@ class AdminController extends Controller
 
     function manageemployee(){
 
-        $query = "SELECT id, name, last_name, email FROM users ORDER BY id";
+        $query = "SELECT id, name, last_name, role, email FROM users ORDER BY id";
 
         $users = DB::select($query);
 
@@ -64,6 +63,53 @@ class AdminController extends Controller
         $id = $req->route()->id;
         
         if ($req->method() == "POST") {
+
+            $email = $req->input('email');
+            $password = $req->input('password');
+
+            $date = date("Y-m-d H:i:s");
+
+            $query = "SELECT email FROM users WHERE id={$id}";
+            $user_email = DB::select($query);
+
+            // in case of changed email
+            if($user_email[0]->email !== $email){
+                
+                $validated = $req->validate([
+                    'email'=>'required|email|unique:users',
+                ]);
+
+                $data['email'] = $req->input('email');
+
+            }
+
+            // in case of changed password
+            if(isset($password) || trim($password) !== '') {
+
+                $validated = $req->validate([
+                    'password'=>'required'
+                ]);
+
+                $data['password'] = Hash::make($req->input('password'));
+
+            }
+
+            $validated = $req->validate([
+                'name'=>'required|string',
+                'last_name'=>'required|string',
+                'role'=>'required|string',
+                // 'email'=>'required|email|unique:users',
+                // 'password'=>'required'
+            ]);
+
+            $data['name'] = $req->input('name');
+            $data['last_name'] = $req->input('last_name');
+            $data['role'] = $req->input('role');
+            // $data['email'] = $req->input('email');
+            // $data['password'] = Hash::make($req->input('password'));
+            $data['updated_at'] = $date;
+
+            DB::table('users')->where('id',$id)->update($data);
 
             return redirect('admin/manageemployee');
 
@@ -83,11 +129,7 @@ class AdminController extends Controller
 
         if($req->method() == 'POST'){
 
-            $user = new User();
-
-            $row = $user->find($id);
-
-            $row->delete();
+            DB::table('users')->delete($id);
 
             return redirect('admin/manageemployee');
             
@@ -99,8 +141,6 @@ class AdminController extends Controller
 
         if($req->method() == 'POST'){
 
-            $department = new Department();
-
             $validated = $req->validate([
                 'name' => 'required|string',
                 'manager_id' => 'required|string',
@@ -109,7 +149,7 @@ class AdminController extends Controller
             $data['name'] = $req->input('name');
             $data['manager_id'] = $req->input('manager_id');
 
-            $department->insert($data);
+            DB::table('departments')->insert($data);
 
             return redirect('admin/managedepartments');
 
@@ -141,8 +181,6 @@ class AdminController extends Controller
 
         if($req->method() == 'POST'){
 
-            $department = new Department();
-
             $validated = $req->validate([
                 'name' => 'required|string',
                 'manager_id' => 'required|string',
@@ -152,7 +190,9 @@ class AdminController extends Controller
             $data['manager_id'] = $req->input('manager_id');
             $data['updated_at'] = date("Y-m-d H:i:s");
 
-            $department->where('id',$id)->update($data);
+            DB::table('departments')
+                ->where('id',$id)
+                ->update($data);
 
             return redirect('admin/managedepartments');
 
@@ -176,11 +216,7 @@ class AdminController extends Controller
 
         if($req->method() == 'POST'){
 
-            $department = new Department();
-
-            $row = $department->find($id);
-
-            $row->delete();
+            DB::table('departments')->delete($id);
 
             return redirect('admin/managedepartments');
             
