@@ -2,7 +2,7 @@
 
 @section('manageemployee')
 
-        <div class="container-fluid">
+    <div class="container-fluid">
         <br>
 
         <h3>Manage Employee</h3><br>

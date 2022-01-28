@@ -22,6 +22,11 @@
     <!-- START BOOTSTRAP -->
     <!-- Bootstrap core CSS -->
     <link href="{{ asset('assets/css/bootstrap.css') }}" rel="stylesheet">
+    {{-- jquery-ui --}}
+    <script src="{{ asset('assets/js/jquery.js') }}"></script>
+    <script src="{{ asset('assets/js/jquery-1.8.3.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/jquery-ui/jquery-ui.js') }}"></script>
+    <link href="{{ asset('assets/js/jquery-ui/jquery-ui.css') }}" rel="stylesheet">
     <!--external css-->
     <link href="{{ asset('assets/font-awesome/css/font-awesome.css') }}" rel="stylesheet" />
     {{-- <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/zabuto_calendar.css') }}"> --}}
@@ -106,8 +111,11 @@
 
     <!-- START BOOTSTRAP -->
     <!-- js placed at the end of the document so the pages load faster -->
-    <script src="{{ asset('assets/js/jquery.js') }}"></script>
-    <script src="{{ asset('assets/js/jquery-1.8.3.min.js') }}"></script>
+    {{-- <script src="{{ asset('assets/js/jquery.js') }}"></script> --}}
+    {{-- <script src="{{ asset('assets/js/jquery-1.8.3.min.js') }}"></script> --}}
+
+    {{-- <script src="{{ asset('assets/js/jquery-ui/jquery-ui.js') }}"></script> --}}
+
     <script src="{{ asset('assets/js/bootstrap.min.js') }}"></script>
     <script class="include" type="text/javascript" src="{{ asset('assets/js/jquery.dcjqaccordion.2.7.js') }}"></script>
     <script src="{{ asset('assets/js/jquery.scrollTo.min.js') }}"></script>
