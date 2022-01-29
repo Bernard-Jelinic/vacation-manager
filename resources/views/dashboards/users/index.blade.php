@@ -112,7 +112,8 @@
             <div id="sidebar"  class="nav-collapse ">
                 <!-- sidebar menu start-->
                 <ul class="sidebar-menu" id="nav-accordion">
-                    <h5 class="centered">{{ Auth::user()->name . ' ' . Auth::user()->last_name }}</h5>
+                    <h5 class="centered">User:</h5>
+                    <h5 class="centered">{{Auth::user()->name . ' ' . Auth::user()->last_name }}</h5>
 
                     <li class="sub-menu">
                         <a href="{{ route('user.dashboard') }}">
@@ -128,7 +129,7 @@
                         </a>
 
                         <ul class="sub">
-                            <li><a href="{{route('applyvacations')}}">Apply Vacation</a></li>
+                            <li><a href="{{route('applyvacation')}}">Apply Vacation</a></li>
                             <li><a href="{{route('historyvacations')}}">Vacations History</a></li>
                         </ul>
                     </li>
@@ -157,7 +158,7 @@
 
                 @yield('dashboard')
 
-                @yield('applyvacations')
+                @yield('applyvacation')
                 @yield('historyvacations')
 
             </section>

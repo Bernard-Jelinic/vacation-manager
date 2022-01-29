@@ -63,6 +63,9 @@ Route::group(['prefix'=>'admin', 'middleware'=>['isAdmin','auth','PreventBackHis
     Route::post('manageemployee/delete/{id}',[AdminController::class,'deleteemployee']);
 
     Route::get('allvacations',[AdminController::class,'allvacations'])->name('allvacations');
+    Route::get('editvacation/{id}',[AdminController::class,'editvacation']);
+    Route::post('editvacation/{id}',[AdminController::class,'editvacation']);
+    //Route::post('allvacations',[AdminController::class,'allvacations'])->name('allvacations');
     Route::get('pendingvacations',[AdminController::class,'pendingvacations'])->name('pendingvacations');
     Route::get('approvedvacations',[AdminController::class,'approvedvacations'])->name('approvedvacations');
     Route::get('notapprovedvacations',[AdminController::class,'notapprovedvacations'])->name('notapprovedvacations');
@@ -73,8 +76,8 @@ Route::group(['prefix'=>'manager', 'middleware'=>['isManager','auth','PreventBac
 
     // Route::get('dashboard',[AdminController::class,'index'])->name('admin.dashboard');
     Route::get('dashboard',[ManagerController::class,'index'])->name('manager.dashboard');
-    Route::get('applyvacations',[ManagerController::class,'applyvacations'])->name('applyvacations');
-    Route::get('historyvacations',[ManagerController::class,'historyvacations'])->name('historyvacations');
+    // Route::get('applyvacations',[ManagerController::class,'applyvacations'])->name('applyvacations');
+    // Route::get('historyvacations',[ManagerController::class,'historyvacations'])->name('historyvacations');
 
     // Route::get('profile',[ManagerController::class,'profile'])->name('manager.profile');
     // Route::get('settings',[ManagerController::class,'settings'])->name('manager.settings');
@@ -84,7 +87,9 @@ Route::group(['prefix'=>'manager', 'middleware'=>['isManager','auth','PreventBac
 Route::group(['prefix'=>'user', 'middleware'=>['isUser','auth','PreventBackHistory']], function(){
 
     Route::get('dashboard',[UserController::class,'index'])->name('user.dashboard');
-    Route::get('applyvacations',[UserController::class,'applyvacations'])->name('applyvacations');
+
+    Route::get('applyvacation',[UserController::class,'applyvacation'])->name('applyvacation');
+    Route::post('applyvacation',[UserController::class,'applyvacation'])->name('applyvacation');
     Route::get('historyvacations',[UserController::class,'historyvacations'])->name('historyvacations');
 
     // Route::get('dashboard',[UserController::class,'index'])->name('user.dashboard');

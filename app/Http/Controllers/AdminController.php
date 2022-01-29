@@ -5,12 +5,20 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
     function index(){
 
-        return view('dashboards.admins.dashboard');
+        $query = "SELECT vacations.id, vacations.user_id, users.name, users.last_name FROM vacations JOIN users ON vacations.user_id = users.id WHERE admin_read = 0";
+        $vacation_datas = DB::select($query);
+
+        // print_r($vacation_datas);
+
+        return view('dashboards.admins.dashboard', ['vacation_datas' => $vacation_datas]);
+
+        // return view('dashboards.admins.dashboard');
 
     }
 
@@ -224,16 +232,104 @@ class AdminController extends Controller
 
     }
 
-   function allvacations(){
-       return view('dashboards.admins.allvacations');
-   }
-   function pendingvacations(){
-       return view('dashboards.admins.pendingvacations');
-   }
-   function approvedvacations(){
-       return view('dashboards.admins.approvedvacations');
-   }
-   function notapprovedvacations(){
-       return view('dashboards.admins.notapprovedvacations');
-   }
+    function allvacations(Request $req){
+
+        $query = "SELECT vacations.id, vacations.depart, vacations.return, vacations.created_at, vacations.status, vacations.user_id, users.name, users.last_name FROM vacations JOIN users ON vacations.user_id = users.id";
+        $vacation_datas = DB::select($query);
+
+        foreach ($vacation_datas as $value) {
+            $value->depart = date('d.m.Y', strtotime($value->depart));
+            $value->return = date('d.m.Y', strtotime($value->return));
+            $value->created_at = date('d.m.Y', strtotime($value->created_at));
+        }
+
+        return view('dashboards.admins.allvacations', ['vacation_datas' => $vacation_datas, 'display' => 'all']);
+
+    }
+
+    function pendingvacations(){
+
+        $query = "SELECT vacations.id, vacations.depart, vacations.return, vacations.created_at, vacations.status, vacations.user_id, users.name, users.last_name FROM vacations JOIN users ON vacations.user_id = users.id WHERE vacations.status = 0";
+        $vacation_datas = DB::select($query);
+
+        foreach ($vacation_datas as $value) {
+            $value->depart = date('d.m.Y', strtotime($value->depart));
+            $value->return = date('d.m.Y', strtotime($value->return));
+            $value->created_at = date('d.m.Y', strtotime($value->created_at));
+        }
+
+        return view('dashboards.admins.allvacations', ['vacation_datas' => $vacation_datas, 'display' => 'pending']);
+
+    }
+
+    function approvedvacations(){
+
+        $query = "SELECT vacations.id, vacations.depart, vacations.return, vacations.created_at, vacations.status, vacations.user_id, users.name, users.last_name FROM vacations JOIN users ON vacations.user_id = users.id WHERE vacations.status = 1";
+        $vacation_datas = DB::select($query);
+
+        foreach ($vacation_datas as $value) {
+            $value->depart = date('d.m.Y', strtotime($value->depart));
+            $value->return = date('d.m.Y', strtotime($value->return));
+            $value->created_at = date('d.m.Y', strtotime($value->created_at));
+        }
+
+        return view('dashboards.admins.allvacations', ['vacation_datas' => $vacation_datas, 'display' => 'approved']);
+
+    }
+
+    function notapprovedvacations(){
+
+        $query = "SELECT vacations.id, vacations.depart, vacations.return, vacations.created_at, vacations.status, vacations.user_id, users.name, users.last_name FROM vacations JOIN users ON vacations.user_id = users.id WHERE vacations.status = 2";
+        $vacation_datas = DB::select($query);
+
+        foreach ($vacation_datas as $value) {
+            $value->depart = date('d.m.Y', strtotime($value->depart));
+            $value->return = date('d.m.Y', strtotime($value->return));
+            $value->created_at = date('d.m.Y', strtotime($value->created_at));
+        }
+
+        return view('dashboards.admins.allvacations', ['vacation_datas' => $vacation_datas, 'display' => 'not approved']);
+
+    }
+
+    function editvacation(Request $req){
+
+        $id = $req->route()->id;
+        //print_r($id);
+
+        if ($req->method()=="POST") {
+            
+            print_r($req->input('status'));
+            
+            $validated = $req->validate([
+                'status' => 'required|string',
+            ]);
+
+            $data['updated_at'] = date("Y-m-d H:i:s");
+            $data['status'] = $req->input('status');
+
+            DB::table('vacations')
+                ->where('id',$id)
+                ->update($data);
+
+            return redirect('admin/allvacations');
+
+        }
+
+        $query = "SELECT vacations.id, vacations.depart, vacations.return, vacations.created_at, vacations.status, vacations.user_id, users.name, users.last_name FROM vacations JOIN users ON vacations.user_id = users.id WHERE vacations.id = {$id}";
+
+        $vacation_data = DB::select($query);
+
+        //print_r($vacation_data);
+
+        foreach ($vacation_data as $value) {
+            $value->depart = date('d.m.Y', strtotime($value->depart));
+            $value->return = date('d.m.Y', strtotime($value->return));
+            $value->created_at = date('d.m.Y', strtotime($value->created_at));
+        }
+
+        return view('dashboards.admins.editvacation', ['vacation_data' => $vacation_data]);
+
+    }
+
 }

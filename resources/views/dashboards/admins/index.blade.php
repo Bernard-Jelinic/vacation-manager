@@ -112,6 +112,7 @@
             <div id="sidebar"  class="nav-collapse ">
                 <!-- sidebar menu start-->
                 <ul class="sidebar-menu" id="nav-accordion">
+                    <h5 class="centered">Admin:</h5>
                     <h5 class="centered">{{ Auth::user()->name . ' ' . Auth::user()->last_name }}</h5>
 
                     <li class="sub-menu">
@@ -189,6 +190,7 @@
                 @yield('managedepartments')
                 @yield('editdepartments')
 
+                @yield('editvacation')
                 @yield('allvacations')
                 @yield('pendingvacations')
                 @yield('approvedvacations')
