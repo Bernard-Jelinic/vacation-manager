@@ -8,6 +8,36 @@ use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
+
+    function fetchnotification(){
+        
+        // $notifications = "SELECT COUNT(*) FROM vacations WHERE admin_read = 0;";
+        // $rows_number = DB::select($notifications);
+        //$count = DB::table('vacations')->where('admin_read', '=', 0)->count();
+
+        $notifications = DB::table('vacations')
+                ->select(DB::raw('vacations.id, vacations.created_at, users.name, users.last_name'))
+                ->where('status', '!=', 0)
+                ->where('user_notified', '=', 0)
+                ->where('user_id', '=', Auth::user()->id)
+                ->join('users', 'vacations.user_id', '=', 'users.id')
+                ->get();
+                // ->count();
+
+        foreach ($notifications as $value) {
+            $value->created_at = date('d.m.Y', strtotime($value->created_at));
+        }
+
+        $counter = count($notifications);
+
+        return response()->json([
+            'notifications'=>$notifications,
+            'count'=>$counter
+
+        ]);
+
+    }
+
     function index(){
 
         return view('dashboards.users.dashboard');
@@ -15,6 +45,17 @@ class UserController extends Controller
     }
 
     function applyvacation(Request $req){
+
+        // $user_id = Auth::user()->id;
+
+        // $vacation_datas = DB::table('vacations')
+        //     ->select(DB::raw('vacations.id, vacations.depart, vacations.return, vacations.created_at,vacations.status, vacations.user_id, users.name, users.last_name'))
+        //     // ->where('status', '=', 0)
+        //     // ->where('user_notified', '=', 0)
+        //     ->where('vacations.status', '=', 2)
+        //     ->where('manager_id', '=', $user_id)
+        //     ->join('users', 'vacations.user_id', '=', 'users.id')
+        //     ->get();
 
         if($req->method() == 'POST'){
 
@@ -55,9 +96,18 @@ class UserController extends Controller
     function historyvacations(){
 
         $user_id = Auth::user()->id;
+
+        // because user is read all the notifications
+        $data['user_notified'] = 1;
+
+        DB::table('vacations')
+            ->where('user_id',$user_id)
+            ->update($data);
+        
         $query = "SELECT `id`, `depart`, `return`, `created_at`, `status` FROM `vacations` WHERE user_id={$user_id}";
         $vacation_datas = DB::select($query);
 
+        // converting to better format for people
         foreach ($vacation_datas as $value) {
             $value->depart = date('d.m.Y', strtotime($value->depart));
             $value->return = date('d.m.Y', strtotime($value->return));

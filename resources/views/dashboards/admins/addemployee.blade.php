@@ -2,6 +2,22 @@
 
 @section('addemployee')
 
+    <script type="text/javascript">
+        
+        $(document).ready(function(){
+
+            $("#role").change(function() {
+
+                if (this.value == 'user') {
+
+                     $("#show").show();
+                }
+            });
+
+        });
+
+    </script>
+
     <div class="container-fluid col-lg-5">
         <form method="post" enctype="multipart/form-data"><br>
             
@@ -38,6 +54,20 @@
                     <option value="user">User</option>
                 </select>
             </div>
+
+            
+            <div id="show" class="form-group" hidden>
+                <label>Users Department *</label>
+                <select class="form-control" id="department_id" name="department_id" required>
+                    <option>Select department</option>
+
+                    @foreach ($departments as $department)
+                        <option value="{{$department->id}}">{{$department->name}}</option>
+                    @endforeach
+
+                </select>
+            </div>
+
 
             <div class="form-group">
                 <label>Email address *</label>

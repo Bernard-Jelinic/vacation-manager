@@ -19,10 +19,13 @@
                 <ul class="nav top-menu">
                     <!-- inbox dropdown start-->
                     <li id="header_inbox_bar" class="dropdown">
-                        <a data-toggle="dropdown" class="dropdown-toggle" href="index.html#">
+
+                        
+
+                        {{-- <a data-toggle="dropdown" class="dropdown-toggle" id="notification" href="index.html#">
                             <i class="fa fa-bell"></i>
                             <i class="fa fa-bell-o"></i>
-                            <span class="badge bg-theme">5</span>
+                            <span class="badge bg-theme" id="notification_num"></span>
                         </a>
                         <ul class="dropdown-menu extended inbox">
                             <div class="notify-arrow notify-arrow-green"></div>
@@ -80,7 +83,10 @@
                             <li>
                                 <a href="index.html#">See all vacations</a>
                             </li>
-                        </ul>
+                        </ul> --}}
+
+
+                        
                     </li>
                     <!-- inbox dropdown end -->
                 </ul>
@@ -199,5 +205,67 @@
             </section>
         </section>
     </section>
+
+    <script type="text/javascript">
+
+        $(document).ready(function(){
+
+            fetchNotification();
+            function fetchNotification(){
+
+                $.ajax({
+                    type: "GET",
+                    url: "{{url('admin/fetchnotification')}}",
+                    dataType: "json",
+                    success: function(response){
+
+                        let notificationNav = `
+                        
+                        <a data-toggle="dropdown" class="dropdown-toggle" id="notification" href="index.html#">
+                            ${(response.count > 0) ? `<i class="fa fa-bell"></i><span class="badge bg-theme" id="notification_num">${response.count}</span>` : `<i class="fa fa-bell-o"></i>`}
+                        </a>
+                        
+                        <ul class="dropdown-menu extended inbox">
+                            <div class="notify-arrow notify-arrow-green"></div>
+
+                            ${(response.count >= 0) ? `<li><p class="green">You have ${response.count} pending vacations</p></li>` : `<li><p class="green">You don't have pending vacations</p></li>`}
+
+                        `;
+                        if (response.count >= 0) {
+                            response.notifications.forEach(element => {
+
+                            notificationNav += `
+                                <li>
+                                    <a href="editvacation/${element.id}">
+                                        <span class="subject">
+                                        <span class="from">${element.name +' '+ element.last_name}</span>
+                                        <span class="time">${element.created_at}</span>
+                                        </span>
+                                    </a>
+                                </li>
+                            `;
+                        });
+                        }
+
+
+                        notificationNav += `
+                        
+                            <li>
+                                <a href="allvacations">See all vacations</a>
+                            </li>
+                        </ul>
+
+                        `;
+
+                        $('#header_inbox_bar').html(notificationNav);
+
+                    }
+                })
+
+            }
+
+        })
+
+    </script>
 
 @endsection

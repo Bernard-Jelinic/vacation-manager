@@ -1,4 +1,4 @@
-@extends('dashboards.users.index')
+@extends('dashboards.managers.index')
 
 @section('dashboard')
 
@@ -10,7 +10,7 @@
 
                 $.ajax({
                     type: "GET",
-                    url: "{{url('user/fetchnotification')}}",
+                    url: "{{url('manager/fetchnotification')}}",
                     dataType: "json",
                     success: function(response){
 
@@ -50,7 +50,7 @@
 
 <div class="row">
     <div class="col-lg-9 main-chart">
-    <h1>Hello user {{Auth::user()->name}}, welcome to the vacation manager</h1>
+    <h1>Hello manager {{Auth::user()->name}}, welcome to the vacation manager</h1>
     </div>
     
     

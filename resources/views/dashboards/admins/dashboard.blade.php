@@ -2,16 +2,53 @@
 
 @section('dashboard')
 
-    <script>
+    <script type="text/javascript">
         $(document).ready(function(){
 
-            // setTimeout(() => {
-            // try {
-            //     document.querySelector(".col-lg-3").innerText = "";
-            // } catch (error) {
-            //     //console.log(error);
-            // }
-            // }, 3000);
+            fetchNotification();
+            function fetchNotification(){
+
+                $.ajax({
+                    type: "GET",
+                    url: "{{url('admin/fetchnotification')}}",
+                    dataType: "json",
+                    success: function(response){
+
+                        if (response.notifications.length>0) {
+                            let notificationWindow = '<h3>NOTIFICATIONS</h3>';
+
+                            response.notifications.forEach(element => {
+
+                                notificationWindow += `
+                                    <a href="editvacation/${element.id}">
+                                        <div class="desc">
+                                            <div class="thumb">
+                                                <span class="badge bg-theme"><i class="fa fa-clock-o"></i></span>
+                                            </div>
+                                
+                                            <div class="details">
+                                                <p><muted>${element.created_at}</muted></p>
+                                                <p style="font-size:12px;color:black;">${element.name +' '+ element.last_name} sent a request</p>
+                                            </div>
+                                        </div>
+                                    </a>
+                                `;
+                            });
+
+                            $('.col-lg-3').html(notificationWindow);
+                        }
+                    }
+                })
+
+            }
+
+            setTimeout(() => {
+            try {
+                document.querySelector(".col-lg-3").innerText = "";
+            } catch (error) {
+                //console.log(error);
+            }
+            }, 3000);
 
         });
     </script>
@@ -30,26 +67,10 @@ RIGHT SIDEBAR CONTENT
     
     <div class="col-lg-3 ds">
     <!--COMPLETED ACTIONS DONUTS CHART-->
-        <h3>NOTIFICATIONS</h3>
+        {{-- <h3>NOTIFICATIONS</h3> --}}
                         
         <!-- First Action -->
-        @foreach ($vacation_datas as $vacation_data)
-            <a href="">
-                <div class="desc">
-                    <div class="thumb">
-                        <span class="badge bg-theme"><i class="fa fa-clock-o"></i></span>
-                    </div>
-        
-                    <div class="details">
-                        <p><muted>2 Minutes Ago</muted></p>
-                        {{-- <p>{{$vacation_data->name . ' ' .$vacation_data->last_name . ' send request for vacation'}}</p> --}}
-                        {{-- {{$vacation_data->name . ' ' .$vacation_data->last_name . ' send request for vacation'}} --}}
-                        <a href="#">{{$vacation_data->name . ' ' .$vacation_data->last_name}}</a> sent a request
-                    </div>
-                </div>
-            </a>
 
-        @endforeach
 
 
 

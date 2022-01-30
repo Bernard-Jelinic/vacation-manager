@@ -47,6 +47,7 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::group(['prefix'=>'admin', 'middleware'=>['isAdmin','auth','PreventBackHistory']], function(){
 
     Route::get('dashboard',[AdminController::class,'index'])->name('admin.dashboard');
+    Route::get('fetchnotification',[AdminController::class,'fetchnotification']);
 
     Route::get('adddepartment',[AdminController::class,'adddepartment'])->name('adddepartment');
     Route::post('adddepartment',[AdminController::class,'adddepartment'])->name('adddepartment');
@@ -74,26 +75,26 @@ Route::group(['prefix'=>'admin', 'middleware'=>['isAdmin','auth','PreventBackHis
 
 Route::group(['prefix'=>'manager', 'middleware'=>['isManager','auth','PreventBackHistory']], function(){
 
-    // Route::get('dashboard',[AdminController::class,'index'])->name('admin.dashboard');
     Route::get('dashboard',[ManagerController::class,'index'])->name('manager.dashboard');
-    // Route::get('applyvacations',[ManagerController::class,'applyvacations'])->name('applyvacations');
-    // Route::get('historyvacations',[ManagerController::class,'historyvacations'])->name('historyvacations');
+    Route::get('fetchnotification',[ManagerController::class,'fetchnotification']);
 
-    // Route::get('profile',[ManagerController::class,'profile'])->name('manager.profile');
-    // Route::get('settings',[ManagerController::class,'settings'])->name('manager.settings');
+    Route::get('allvacations',[ManagerController::class,'allvacations'])->name('allvacations');
+    Route::get('editvacation/{id}',[ManagerController::class,'editvacation']);
+    Route::post('editvacation/{id}',[ManagerController::class,'editvacation']);
+    //Route::post('allvacations',[AdminController::class,'allvacations'])->name('allvacations');
+    Route::get('pendingvacations',[ManagerController::class,'pendingvacations'])->name('pendingvacations');
+    Route::get('approvedvacations',[ManagerController::class,'approvedvacations'])->name('approvedvacations');
+    Route::get('notapprovedvacations',[ManagerController::class,'notapprovedvacations'])->name('notapprovedvacations');
     
 });
 
 Route::group(['prefix'=>'user', 'middleware'=>['isUser','auth','PreventBackHistory']], function(){
 
     Route::get('dashboard',[UserController::class,'index'])->name('user.dashboard');
+    Route::get('fetchnotification',[UserController::class,'fetchnotification']);
 
     Route::get('applyvacation',[UserController::class,'applyvacation'])->name('applyvacation');
     Route::post('applyvacation',[UserController::class,'applyvacation'])->name('applyvacation');
     Route::get('historyvacations',[UserController::class,'historyvacations'])->name('historyvacations');
-
-    // Route::get('dashboard',[UserController::class,'index'])->name('user.dashboard');
-    // Route::get('profile',[UserController::class,'profile'])->name('user.profile');
-    // Route::get('settings',[UserController::class,'settings'])->name('user.settings');
     
 });

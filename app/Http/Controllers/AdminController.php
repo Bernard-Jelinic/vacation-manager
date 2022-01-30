@@ -9,16 +9,59 @@ use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
+    function fetchnotification(){
+        
+        // $notifications = "SELECT COUNT(*) FROM vacations WHERE admin_read = 0;";
+        // $rows_number = DB::select($notifications);
+        //$count = DB::table('vacations')->where('admin_read', '=', 0)->count();
+
+        $notifications = DB::table('vacations')
+                ->select(DB::raw('vacations.id, vacations.created_at, users.name, users.last_name'))
+                ->where('status', '=', 0)
+                ->where('admin_read', '=', 0)
+                ->join('users', 'vacations.user_id', '=', 'users.id')
+                ->get();
+                // ->count();
+
+        foreach ($notifications as $value) {
+            $value->created_at = date('d.m.Y', strtotime($value->created_at));
+        }
+
+        $counter = count($notifications);
+
+        return response()->json([
+            'notifications'=>$notifications,
+            'count'=>$counter
+
+        ]);
+
+    }
+
     function index(){
 
-        $query = "SELECT vacations.id, vacations.user_id, users.name, users.last_name FROM vacations JOIN users ON vacations.user_id = users.id WHERE admin_read = 0";
-        $vacation_datas = DB::select($query);
+        //$query = "SELECT vacations.created_at, users.name, users.last_name FROM vacations JOIN users ON vacations.user_id = users.id WHERE admin_read = 0";
+        //$vacation_datas = DB::select($query);
 
-        // print_r($vacation_datas);
 
-        return view('dashboards.admins.dashboard', ['vacation_datas' => $vacation_datas]);
+        // $vacation_datas = DB::table('vacations')
+        //                 ->select(DB::raw('vacations.created_at, users.name, users.last_name'))
+        //                 ->where('admin_read', '=', 0)
+        //                 ->join('users', 'vacations.user_id', '=', 'users.id')
+        //                 ->get();
 
-        // return view('dashboards.admins.dashboard');
+        // foreach ($vacation_datas as $value) {
+        //     $value->created_at = date('d.m.Y', strtotime($value->created_at));
+        // }
+
+        // $query_num_row = "SELECT COUNT(*) FROM vacations WHERE admin_read = 0;";
+        // $rows_number = DB::select($query_num_row);
+        // $rows_number = DB::table('vacations')->where('admin_read', '=', 0)->count();
+
+        // print_r($number_of_rows);
+
+        // return view('dashboards.admins.dashboard', ['vacation_datas' => $vacation_datas]);
+
+        return view('dashboards.admins.dashboard');
 
     }
 
@@ -40,6 +83,7 @@ class AdminController extends Controller
             'name' => $req->input('name'),
             'last_name' => $req->input('last_name'),
             'role' => $req->input('role'),
+            'department_id' => $req->input('department_id'),
             'email' => $req->input('email'),
             'password' => Hash::make($req->input('password')),
             'created_at' => $date,
@@ -52,7 +96,11 @@ class AdminController extends Controller
 
     }
 
-    return view('dashboards.admins.addemployee');
+    $query = "SELECT id,name FROM departments ORDER BY id DESC";
+
+    $departments = DB::select($query);
+
+    return view('dashboards.admins.addemployee', ['departments' => $departments]);
 
     }
 
@@ -138,6 +186,10 @@ class AdminController extends Controller
         if($req->method() == 'POST'){
 
             DB::table('users')->delete($id);
+
+            DB::table('vacations')
+                ->where('user_id','=', $id)
+                ->delete();
 
             return redirect('admin/manageemployee');
             
@@ -234,6 +286,11 @@ class AdminController extends Controller
 
     function allvacations(Request $req){
 
+        $data['admin_read'] = 1;
+
+        DB::table('vacations')
+            ->update($data);
+
         $query = "SELECT vacations.id, vacations.depart, vacations.return, vacations.created_at, vacations.status, vacations.user_id, users.name, users.last_name FROM vacations JOIN users ON vacations.user_id = users.id";
         $vacation_datas = DB::select($query);
 
@@ -248,6 +305,12 @@ class AdminController extends Controller
     }
 
     function pendingvacations(){
+
+        $data['admin_read'] = 1;
+
+        DB::table('vacations')
+            ->where('status', '=',0)
+            ->update($data);
 
         $query = "SELECT vacations.id, vacations.depart, vacations.return, vacations.created_at, vacations.status, vacations.user_id, users.name, users.last_name FROM vacations JOIN users ON vacations.user_id = users.id WHERE vacations.status = 0";
         $vacation_datas = DB::select($query);
@@ -264,6 +327,12 @@ class AdminController extends Controller
 
     function approvedvacations(){
 
+        $data['admin_read'] = 1;
+
+        DB::table('vacations')
+            ->where('status', '=',1)
+            ->update($data);
+
         $query = "SELECT vacations.id, vacations.depart, vacations.return, vacations.created_at, vacations.status, vacations.user_id, users.name, users.last_name FROM vacations JOIN users ON vacations.user_id = users.id WHERE vacations.status = 1";
         $vacation_datas = DB::select($query);
 
@@ -278,6 +347,12 @@ class AdminController extends Controller
     }
 
     function notapprovedvacations(){
+
+        $data['admin_read'] = 1;
+
+        DB::table('vacations')
+            ->where('status', '=',2)
+            ->update($data);
 
         $query = "SELECT vacations.id, vacations.depart, vacations.return, vacations.created_at, vacations.status, vacations.user_id, users.name, users.last_name FROM vacations JOIN users ON vacations.user_id = users.id WHERE vacations.status = 2";
         $vacation_datas = DB::select($query);
@@ -297,6 +372,12 @@ class AdminController extends Controller
         $id = $req->route()->id;
         //print_r($id);
 
+        $data['admin_read'] = 1;
+
+        DB::table('vacations')
+            ->where('id',$id)
+            ->update($data);
+
         if ($req->method()=="POST") {
             
             print_r($req->input('status'));
@@ -307,6 +388,7 @@ class AdminController extends Controller
 
             $data['updated_at'] = date("Y-m-d H:i:s");
             $data['status'] = $req->input('status');
+            $data['admin_read'] = 1;
 
             DB::table('vacations')
                 ->where('id',$id)
