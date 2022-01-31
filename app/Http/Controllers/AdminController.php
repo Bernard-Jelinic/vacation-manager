@@ -54,22 +54,20 @@ class AdminController extends Controller
 
         $date = date("Y-m-d H:i:s");
 
+        $data['department_id'] = NULL;
+
         // in case that employee type is manager it doesn't need to be saved
-        if ($req->input('department_id')) {
-            $data = [
-                'department_id' => $req->input('department_id')
-            ];
+        if ($req->input('department_id')!=='Select department') {
+            $data['department_id'] = $req->input('department_id');
         }
 
-        $data = [
-            'name' => $req->input('name'),
-            'last_name' => $req->input('last_name'),
-            'role' => $req->input('role'),
-            'email' => $req->input('email'),
-            'password' => Hash::make($req->input('password')),
-            'created_at' => $date,
-            'updated_at' => $date
-        ];
+        $data['name'] = $req->input('name');
+        $data['last_name'] = $req->input('last_name');
+        $data['role'] = $req->input('role');
+        $data['email'] = $req->input('email');
+        $data['password'] = $req->input('password');
+        $data['created_at'] = $date;
+        $data['updated_at'] = $date;
 
         DB::table('users')->insert($data);
 

@@ -90,10 +90,10 @@
                         </a>
 
                         <ul class="sub">
-                            <li><a href="{{route('allvacations')}}">All Vacations</a></li>
-                            <li><a href="{{route('pendingvacations')}}">Pending Vacations</a></li>
-                            <li><a href="{{route('approvedvacations')}}">Approved Vacations</a></li>
-                            <li><a href="{{route('notapprovedvacations')}}">Not Approved Vacations</a></li>
+                            <li><a href="{{url('admin/allvacations')}}">All Vacations</a></li>
+                            <li><a href="{{url('admin/pendingvacations')}}">Pending Vacations</a></li>
+                            <li><a href="{{url('admin/approvedvacations')}}">Approved Vacations</a></li>
+                            <li><a href="{{url('admin/notapprovedvacations')}}">Not Approved Vacations</a></li>
                         </ul>
                     </li>
 

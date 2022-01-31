@@ -13,10 +13,10 @@
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
 
-    {{-- <!-- Styles -->
 
     <!-- START BOOTSTRAP -->
     <!-- Bootstrap core CSS -->
+    <link href="{{ asset('assets/css/bootstrap.css') }}" rel="stylesheet">
     {{-- jquery-ui --}}
     <script src="{{ asset('assets/js/jquery.js') }}"></script>
     <script src="{{ asset('assets/js/jquery-1.8.3.min.js') }}"></script>
@@ -24,7 +24,6 @@
     <link href="{{ asset('assets/js/jquery-ui/jquery-ui.css') }}" rel="stylesheet">
     <!--external css-->
     <link href="{{ asset('assets/font-awesome/css/font-awesome.css') }}" rel="stylesheet" />
-    {{-- <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/zabuto_calendar.css') }}"> --}}
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/js/gritter/css/jquery.gritter.css') }}" />
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/lineicons/style.css') }}">
     
