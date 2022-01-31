@@ -5,6 +5,7 @@
     <div class="container-fluid">
         <br>
 
+            {{-- so I can only have one view  --}}
             @if ($display == 'pending')
                 <h3>Pending Vacations</h3><br>
             @elseif ($display == 'approved')
@@ -25,7 +26,7 @@
                 @if ($vacation_datas)
                     @foreach ($vacation_datas as $vacation_data)
 
-                        <tr><td>{{$vacation_data->name}}</td>
+                        <tr><td>{{$vacation_data->name . ' '. $vacation_data->last_name}}</td>
                         <td id="user_id" class="user_id" name="user_id" value="{{$vacation_data->id}}">{{$vacation_data->id}}</td>
                         <td>{{$vacation_data->depart}}</td><td>{{$vacation_data->return}}</td><td>{{$vacation_data->created_at}}</td>
                         

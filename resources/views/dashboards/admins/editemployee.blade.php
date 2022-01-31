@@ -2,6 +2,28 @@
 
 @section('editemployee')
 
+    <script type="text/javascript">
+        
+        $(document).ready(function(){
+
+            if ($("#role option:selected").val() == 'user') {
+                $("#show").show();
+            }
+
+            // console.log($("#role option:selected").val());
+
+            $("#role").change(function() {
+
+                if (this.value == 'user') {
+
+                     $("#show").show();
+                }
+            });
+
+        });
+
+    </script>
+
     <div class="container-fluid col-lg-5">
         <form method="post" enctype="multipart/form-data"><br>
 
@@ -27,7 +49,7 @@
 
                     <div class="form-group">
                         <label>Employee last name</label>
-                        <input value="{{$key->last_name}}" id="name" type="text" class="form-control" placeholder="Employee last name" name="last_name" required autofocus>
+                        <input value="{{$key->last_name}}" id="last_name" type="text" class="form-control" placeholder="Employee last name" name="last_name" required autofocus>
                     </div>
 
                 @endforeach
@@ -42,6 +64,20 @@
                             <option value="admin" {{$key->role == 'admin' ? 'selected':''}}>Admin</option>
                             <option value="manager" {{$key->role == 'manager' ? 'selected':''}}>Manager</option>
                             <option value="user" {{$key->role == 'user' ? 'selected':''}}>User</option>
+                    @endforeach
+
+                </select>
+            </div>
+
+            <div id="show" class="form-group" hidden>
+                <label>Users Department * </label>
+                <select class="form-control" id="department_id" name="department_id" required>
+                    <option>Select department</option>
+
+                    @foreach ($employee as $key)
+                        @foreach ($departments as $department)
+                            <option value="{{$department->id}}" {{$department->id == $key->department_id ? 'selected':''}}>{{$department->name}}</option>
+                        @endforeach
                     @endforeach
 
                 </select>

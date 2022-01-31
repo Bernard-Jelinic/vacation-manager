@@ -10,10 +10,6 @@ class UserController extends Controller
 {
 
     function fetchnotification(){
-        
-        // $notifications = "SELECT COUNT(*) FROM vacations WHERE admin_read = 0;";
-        // $rows_number = DB::select($notifications);
-        //$count = DB::table('vacations')->where('admin_read', '=', 0)->count();
 
         $notifications = DB::table('vacations')
                 ->select(DB::raw('vacations.id, vacations.created_at, users.name, users.last_name'))
@@ -22,12 +18,13 @@ class UserController extends Controller
                 ->where('user_id', '=', Auth::user()->id)
                 ->join('users', 'vacations.user_id', '=', 'users.id')
                 ->get();
-                // ->count();
 
+        // converting to better readible format for people
         foreach ($notifications as $value) {
             $value->created_at = date('d.m.Y', strtotime($value->created_at));
         }
 
+        //to display notification number
         $counter = count($notifications);
 
         return response()->json([
@@ -45,17 +42,6 @@ class UserController extends Controller
     }
 
     function applyvacation(Request $req){
-
-        // $user_id = Auth::user()->id;
-
-        // $vacation_datas = DB::table('vacations')
-        //     ->select(DB::raw('vacations.id, vacations.depart, vacations.return, vacations.created_at,vacations.status, vacations.user_id, users.name, users.last_name'))
-        //     // ->where('status', '=', 0)
-        //     // ->where('user_notified', '=', 0)
-        //     ->where('vacations.status', '=', 2)
-        //     ->where('manager_id', '=', $user_id)
-        //     ->join('users', 'vacations.user_id', '=', 'users.id')
-        //     ->get();
 
         if($req->method() == 'POST'){
 

@@ -31,11 +31,11 @@ Route::get('/login', function () {
     return view('auth.login');
 });
 
-Route::get('/register', function () {
-    return view('register');
-});
+// Route::get('/register', function () {
+//     return view('register');
+// });
 
-//ovo spriječava da kada sam prijavljen da se vratim na login page sa back-om
+//this prevent going back to login page if you are already login
 Route::middleware(['middleware'=>'PreventBackHistory'])->group(function () {
     Auth::routes();
 });
@@ -66,7 +66,6 @@ Route::group(['prefix'=>'admin', 'middleware'=>['isAdmin','auth','PreventBackHis
     Route::get('allvacations',[AdminController::class,'allvacations'])->name('allvacations');
     Route::get('editvacation/{id}',[AdminController::class,'editvacation']);
     Route::post('editvacation/{id}',[AdminController::class,'editvacation']);
-    //Route::post('allvacations',[AdminController::class,'allvacations'])->name('allvacations');
     Route::get('pendingvacations',[AdminController::class,'pendingvacations'])->name('pendingvacations');
     Route::get('approvedvacations',[AdminController::class,'approvedvacations'])->name('approvedvacations');
     Route::get('notapprovedvacations',[AdminController::class,'notapprovedvacations'])->name('notapprovedvacations');
@@ -81,7 +80,6 @@ Route::group(['prefix'=>'manager', 'middleware'=>['isManager','auth','PreventBac
     Route::get('allvacations',[ManagerController::class,'allvacations'])->name('allvacations');
     Route::get('editvacation/{id}',[ManagerController::class,'editvacation']);
     Route::post('editvacation/{id}',[ManagerController::class,'editvacation']);
-    //Route::post('allvacations',[AdminController::class,'allvacations'])->name('allvacations');
     Route::get('pendingvacations',[ManagerController::class,'pendingvacations'])->name('pendingvacations');
     Route::get('approvedvacations',[ManagerController::class,'approvedvacations'])->name('approvedvacations');
     Route::get('notapprovedvacations',[ManagerController::class,'notapprovedvacations'])->name('notapprovedvacations');

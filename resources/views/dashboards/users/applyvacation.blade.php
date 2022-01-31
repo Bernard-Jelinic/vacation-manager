@@ -19,9 +19,7 @@
                         var nextDay = $('#depart').datepicker('getDate', '+1d');
                         nextDay.setDate(nextDay.getDate()+1);
                         $('#return').datepicker("option","minDate",nextDay);
-
                     }
-                    
                 }
             });
 
@@ -39,8 +37,6 @@
                         $('#depart').datepicker("option","maxDate",previousDay);
 
                     }
-
-                    
                 }
             });
 
@@ -64,7 +60,6 @@
 
             <div class="form-group">
                 <label>Select depart date</label>
-                {{-- <input value="{{old('name')}}" id="name" type="text" class="form-control" placeholder="Department Name" name="name" required autofocus> --}}
                 <input class="form-control" type="text" id="depart" name="depart" title="" placeholder="depart date" required>
             </div>
 
@@ -78,15 +73,5 @@
 
         </form>
     </div>
-
-    {{-- <form action="" method="POST">
-
-        <input type="text" id="depart" name="depart" placeholder="depart date">
-        <input type="text" id="return" name="return" placeholder="return date">
-
-        @csrf
-        <input type="submit" value="Apply Vacation">
-    </form> --}}
-
 
 @endsection

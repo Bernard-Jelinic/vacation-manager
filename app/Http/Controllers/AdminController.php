@@ -10,10 +10,6 @@ use Illuminate\Support\Facades\Auth;
 class AdminController extends Controller
 {
     function fetchnotification(){
-        
-        // $notifications = "SELECT COUNT(*) FROM vacations WHERE admin_read = 0;";
-        // $rows_number = DB::select($notifications);
-        //$count = DB::table('vacations')->where('admin_read', '=', 0)->count();
 
         $notifications = DB::table('vacations')
                 ->select(DB::raw('vacations.id, vacations.created_at, users.name, users.last_name'))
@@ -21,12 +17,13 @@ class AdminController extends Controller
                 ->where('admin_read', '=', 0)
                 ->join('users', 'vacations.user_id', '=', 'users.id')
                 ->get();
-                // ->count();
 
+        // converting to better readible format for people
         foreach ($notifications as $value) {
             $value->created_at = date('d.m.Y', strtotime($value->created_at));
         }
 
+        //to display notification number
         $counter = count($notifications);
 
         return response()->json([
@@ -38,28 +35,6 @@ class AdminController extends Controller
     }
 
     function index(){
-
-        //$query = "SELECT vacations.created_at, users.name, users.last_name FROM vacations JOIN users ON vacations.user_id = users.id WHERE admin_read = 0";
-        //$vacation_datas = DB::select($query);
-
-
-        // $vacation_datas = DB::table('vacations')
-        //                 ->select(DB::raw('vacations.created_at, users.name, users.last_name'))
-        //                 ->where('admin_read', '=', 0)
-        //                 ->join('users', 'vacations.user_id', '=', 'users.id')
-        //                 ->get();
-
-        // foreach ($vacation_datas as $value) {
-        //     $value->created_at = date('d.m.Y', strtotime($value->created_at));
-        // }
-
-        // $query_num_row = "SELECT COUNT(*) FROM vacations WHERE admin_read = 0;";
-        // $rows_number = DB::select($query_num_row);
-        // $rows_number = DB::table('vacations')->where('admin_read', '=', 0)->count();
-
-        // print_r($number_of_rows);
-
-        // return view('dashboards.admins.dashboard', ['vacation_datas' => $vacation_datas]);
 
         return view('dashboards.admins.dashboard');
 
@@ -79,11 +54,17 @@ class AdminController extends Controller
 
         $date = date("Y-m-d H:i:s");
 
+        // in case that employee type is manager it doesn't need to be saved
+        if ($req->input('department_id')) {
+            $data = [
+                'department_id' => $req->input('department_id')
+            ];
+        }
+
         $data = [
             'name' => $req->input('name'),
             'last_name' => $req->input('last_name'),
             'role' => $req->input('role'),
-            'department_id' => $req->input('department_id'),
             'email' => $req->input('email'),
             'password' => Hash::make($req->input('password')),
             'created_at' => $date,
@@ -96,7 +77,7 @@ class AdminController extends Controller
 
     }
 
-    $query = "SELECT id,name FROM departments ORDER BY id DESC";
+    $query = "SELECT id, name FROM departments ORDER BY id DESC";
 
     $departments = DB::select($query);
 
@@ -106,9 +87,10 @@ class AdminController extends Controller
 
     function manageemployee(){
 
-        $query = "SELECT id, name, last_name, role, email FROM users ORDER BY id";
-
-        $users = DB::select($query);
+        $users = DB::table('departments')
+            ->select(DB::raw('departments.id AS department_id, departments.name AS department_name, users.id, users.name, users.last_name, users.role, users.email'))
+            ->join('users', 'departments.id', '=', 'users.department_id')
+            ->get();
 
         return view('dashboards.admins.manageemployee', ['users' => $users]);
 
@@ -154,15 +136,13 @@ class AdminController extends Controller
                 'name'=>'required|string',
                 'last_name'=>'required|string',
                 'role'=>'required|string',
-                // 'email'=>'required|email|unique:users',
-                // 'password'=>'required'
+                'department_id'=>'required|string',
             ]);
 
             $data['name'] = $req->input('name');
             $data['last_name'] = $req->input('last_name');
             $data['role'] = $req->input('role');
-            // $data['email'] = $req->input('email');
-            // $data['password'] = Hash::make($req->input('password'));
+            $data['department_id'] = $req->input('department_id');
             $data['updated_at'] = $date;
 
             DB::table('users')->where('id',$id)->update($data);
@@ -171,11 +151,17 @@ class AdminController extends Controller
 
         }
 
-        $query = "SELECT id, name, last_name, role, email FROM users WHERE id ={$id}";
+        $employee = DB::table('departments')
+            ->select(DB::raw('departments.id AS department_id, departments.name AS department_name, users.id, users.name, users.last_name, users.role, users.email'))
+            ->where('users.id', '=', $id)
+            ->join('users', 'departments.id', '=', 'users.department_id')
+            ->get();
 
-        $employee = DB::select($query);
+        $query_depart = "SELECT id, name FROM departments ORDER BY id DESC";
 
-        return view('dashboards.admins.editemployee', ['employee' => $employee]);
+        $departments = DB::select($query_depart);
+
+        return view('dashboards.admins.editemployee', ['employee' => $employee,'departments' => $departments]);
 
     }
 
@@ -294,12 +280,14 @@ class AdminController extends Controller
         $query = "SELECT vacations.id, vacations.depart, vacations.return, vacations.created_at, vacations.status, vacations.user_id, users.name, users.last_name FROM vacations JOIN users ON vacations.user_id = users.id";
         $vacation_datas = DB::select($query);
 
+        // converting to better readible format for people
         foreach ($vacation_datas as $value) {
             $value->depart = date('d.m.Y', strtotime($value->depart));
             $value->return = date('d.m.Y', strtotime($value->return));
             $value->created_at = date('d.m.Y', strtotime($value->created_at));
         }
 
+        // variable display is because I can only have one view
         return view('dashboards.admins.allvacations', ['vacation_datas' => $vacation_datas, 'display' => 'all']);
 
     }
@@ -315,12 +303,14 @@ class AdminController extends Controller
         $query = "SELECT vacations.id, vacations.depart, vacations.return, vacations.created_at, vacations.status, vacations.user_id, users.name, users.last_name FROM vacations JOIN users ON vacations.user_id = users.id WHERE vacations.status = 0";
         $vacation_datas = DB::select($query);
 
+        // converting to better readible format for people
         foreach ($vacation_datas as $value) {
             $value->depart = date('d.m.Y', strtotime($value->depart));
             $value->return = date('d.m.Y', strtotime($value->return));
             $value->created_at = date('d.m.Y', strtotime($value->created_at));
         }
 
+        // variable display is because I can only have one view
         return view('dashboards.admins.allvacations', ['vacation_datas' => $vacation_datas, 'display' => 'pending']);
 
     }
@@ -336,12 +326,14 @@ class AdminController extends Controller
         $query = "SELECT vacations.id, vacations.depart, vacations.return, vacations.created_at, vacations.status, vacations.user_id, users.name, users.last_name FROM vacations JOIN users ON vacations.user_id = users.id WHERE vacations.status = 1";
         $vacation_datas = DB::select($query);
 
+        // converting to better readible format for people
         foreach ($vacation_datas as $value) {
             $value->depart = date('d.m.Y', strtotime($value->depart));
             $value->return = date('d.m.Y', strtotime($value->return));
             $value->created_at = date('d.m.Y', strtotime($value->created_at));
         }
 
+        // variable display is because I can only have one view
         return view('dashboards.admins.allvacations', ['vacation_datas' => $vacation_datas, 'display' => 'approved']);
 
     }
@@ -357,12 +349,14 @@ class AdminController extends Controller
         $query = "SELECT vacations.id, vacations.depart, vacations.return, vacations.created_at, vacations.status, vacations.user_id, users.name, users.last_name FROM vacations JOIN users ON vacations.user_id = users.id WHERE vacations.status = 2";
         $vacation_datas = DB::select($query);
 
+        // converting to better readible format for people
         foreach ($vacation_datas as $value) {
             $value->depart = date('d.m.Y', strtotime($value->depart));
             $value->return = date('d.m.Y', strtotime($value->return));
             $value->created_at = date('d.m.Y', strtotime($value->created_at));
         }
 
+        // variable display is because I can only have one view
         return view('dashboards.admins.allvacations', ['vacation_datas' => $vacation_datas, 'display' => 'not approved']);
 
     }
@@ -370,7 +364,6 @@ class AdminController extends Controller
     function editvacation(Request $req){
 
         $id = $req->route()->id;
-        //print_r($id);
 
         $data['admin_read'] = 1;
 
@@ -379,8 +372,6 @@ class AdminController extends Controller
             ->update($data);
 
         if ($req->method()=="POST") {
-            
-            print_r($req->input('status'));
             
             $validated = $req->validate([
                 'status' => 'required|string',
@@ -402,8 +393,7 @@ class AdminController extends Controller
 
         $vacation_data = DB::select($query);
 
-        //print_r($vacation_data);
-
+        // converting to better readible format for people
         foreach ($vacation_data as $value) {
             $value->depart = date('d.m.Y', strtotime($value->depart));
             $value->return = date('d.m.Y', strtotime($value->return));

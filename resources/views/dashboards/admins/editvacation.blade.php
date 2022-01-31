@@ -28,13 +28,11 @@
                     <div class="form-group">
                         <label>Depart date</label>
                         <h4>{{$key->depart}}</h4>
-                        {{-- <input value="{{$key->depart}}" id="name" type="text" class="form-control" placeholder="Employee name" name="name" readonly="readonly"> --}}
                     </div>
 
                     <div class="form-group">
                         <label>Return date</label>
                         <h4>{{$key->return}}</h4>
-                        {{-- <input value="{{$key->return}}" id="name" type="text" class="form-control" placeholder="Employee last name" name="last_name" readonly="readonly"> --}}
                     </div>
 
                     <div class="form-group">

@@ -6,11 +6,14 @@
         
         $(document).ready(function(){
 
+            //  because it only needs to be displayed if user select type of user
             $("#role").change(function() {
 
                 if (this.value == 'user') {
 
                      $("#show").show();
+                }else{
+                    $("#show").hide();
                 }
             });
 
@@ -49,7 +52,7 @@
                 <label>Employees Role *</label>
                 <select class="form-control" id="role" name="role" required>
                     <option>Select role</option>
-                    <option value="admin">Admin</option>
+                    {{-- <option value="admin">Admin</option> --}}
                     <option value="manager">Manager</option>
                     <option value="user">User</option>
                 </select>
