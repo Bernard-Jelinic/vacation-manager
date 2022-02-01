@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 31, 2022 at 06:18 PM
+-- Generation Time: Feb 01, 2022 at 10:42 AM
 -- Server version: 10.4.22-MariaDB
 -- PHP Version: 8.1.1
 
@@ -39,9 +39,9 @@ CREATE TABLE `departments` (
 --
 
 INSERT INTO `departments` (`id`, `name`, `manager_id`, `updated_at`) VALUES
-(1, 'Development', 14, '2022-01-30 08:26:35'),
-(2, 'Sales', 4, '2022-01-30 08:24:44'),
-(3, 'Finance', 19, '2022-01-31 03:18:16');
+(1, 'Development', 5, '2022-02-01 09:37:06'),
+(2, 'Sales', 6, '2022-02-01 09:37:12'),
+(3, 'Finance', 7, '2022-02-01 09:37:19');
 
 -- --------------------------------------------------------
 
@@ -145,8 +145,7 @@ INSERT INTO `users` (`id`, `name`, `last_name`, `role`, `department_id`, `email`
 (7, 'Ivo', 'Ivić', 'manager', NULL, 'ivo@gmail.com', NULL, '$2y$10$wuBuASrBRQ0nm2EUPqOviOP5qkPWPqM34MF2Dv0Ri97jieYg890V2', NULL, '2022-01-31 15:44:17', '2022-01-31 15:44:17'),
 (8, 'Josipa', 'Jelinić', 'user', 1, 'josipa@gmail.com', NULL, '$2y$10$rHhOp35sDy2hS5PExBHZ2eOCehqp1PXzQngZxbyO7qu6ld.h3YC/u', NULL, '2022-01-31 15:45:33', '2022-01-31 15:45:33'),
 (9, 'Miroslav', 'Jelinić', 'user', 2, 'miroslav@gmail.com', NULL, '$2y$10$qHDMZbUzEgkoV9qkdc0eAuVlCDDJY6n9oCQ6TMyQLOrTw0W5rIHR.', NULL, '2022-01-31 15:48:59', '2022-01-31 15:48:59'),
-(10, 'Olivera', 'Jelinić', 'user', 3, 'olivera@gmail.com', NULL, '$2y$10$NR5aodqbY0mhH0pPX82n1ecaQdUQOanNI.Q5fQosYWKngP/uoUvCu', NULL, '2022-01-31 15:49:49', '2022-01-31 15:49:49'),
-(11, 'test', 'test', 'manager', NULL, 'test@gmail.com', NULL, 'test', NULL, '2022-01-31 16:13:38', '2022-01-31 16:13:38');
+(10, 'Olivera', 'Jelinić', 'user', 3, 'olivera@gmail.com', NULL, '$2y$10$NR5aodqbY0mhH0pPX82n1ecaQdUQOanNI.Q5fQosYWKngP/uoUvCu', NULL, '2022-01-31 15:49:49', '2022-01-31 15:49:49');
 
 -- --------------------------------------------------------
 
@@ -178,7 +177,7 @@ INSERT INTO `vacations` (`id`, `depart`, `return`, `created_at`, `updated_at`, `
 (22, '2022-02-08 23:00:00', '2022-02-27 23:00:00', '2022-01-29 05:19:55', '2022-01-29 05:19:55', 1, 1, 1, 0, 2),
 (23, '2022-01-31 23:00:00', '2022-02-01 23:00:00', '2022-01-29 05:20:29', '2022-01-29 11:29:22', 0, 1, 0, 0, 2),
 (24, '2022-01-31 23:00:00', '2022-02-02 23:00:00', '2022-01-29 05:23:32', '2022-01-29 05:23:32', 0, 1, 0, 1, 2),
-(25, '2022-01-31 23:00:00', '2022-02-18 23:00:00', '2022-01-30 06:43:55', '2022-01-30 06:55:41', 0, 1, 1, 0, 4),
+(25, '2022-01-31 23:00:00', '2022-02-18 23:00:00', '2022-01-30 06:43:55', '2022-01-30 06:55:41', 0, 1, 1, 1, 4),
 (26, '2022-02-19 23:00:00', '2022-02-25 23:00:00', '2022-01-30 09:47:01', '2022-01-30 09:48:03', 1, 1, 1, 1, 8),
 (29, '2022-02-05 23:00:00', '2022-02-11 23:00:00', '2022-01-31 03:19:18', '2022-01-31 03:30:22', 2, 1, 1, 1, 9);
 
