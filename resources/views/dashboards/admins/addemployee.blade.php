@@ -82,6 +82,11 @@
                 <input class="form-control" type="password" placeholder="Password" name="password" value="{{old('password')}}"/>
             </div>
 
+            <div class="form-group">
+                <label>Confirm Password *</label>
+                <input class="form-control" type="password" placeholder="Confirm Password" name="password_confirmation" value="{{old('password')}}"/>
+            </div>
+
             <button class="btn btn-primary" type="submit">Create</button>
 
         </form>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -49,7 +50,7 @@ class AdminController extends Controller
             'last_name'=>'required|alpha',
             'role'=>'required|alpha',
             'email'=>'required|email|unique:users',
-            'password'=>'required'
+            'password' => 'required|confirmed',
         ]);
 
         $date = date("Y-m-d H:i:s");
@@ -61,15 +62,15 @@ class AdminController extends Controller
             $data['department_id'] = $req->input('department_id');
         }
 
-        $data['name'] = $req->input('name');
-        $data['last_name'] = $req->input('last_name');
-        $data['role'] = $req->input('role');
-        $data['email'] = $req->input('email');
-        $data['password'] = $req->input('password');
-        $data['created_at'] = $date;
-        $data['updated_at'] = $date;
-
-        DB::table('users')->insert($data);
+        User::create([
+            'name' => $req->input('name'),
+            'last_name' => $req->input('last_name'),
+            'role' => $req->input('role'),
+            'email' => $req->input('email'),
+            'password' => Hash::make($req->input('password')),
+            'created_at' => $date,
+            'updated_at' => $date,
+        ]);
 
         return redirect('admin/manageemployee');
 
@@ -89,6 +90,8 @@ class AdminController extends Controller
             ->select(DB::raw('departments.id AS department_id, departments.name AS department_name, users.id, users.name, users.last_name, users.role, users.email'))
             ->join('users', 'departments.id', '=', 'users.department_id')
             ->get();
+
+        dd($users);
 
         return view('dashboards.admins.manageemployee', ['users' => $users]);
 
