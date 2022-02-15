@@ -55,16 +55,17 @@ class AdminController extends Controller
 
         $date = date("Y-m-d H:i:s");
 
-        $data['department_id'] = NULL;
+        $department_id = NULL;
 
         // in case that employee type is manager it doesn't need to be saved
         if ($req->input('department_id')!=='Select department') {
-            $data['department_id'] = $req->input('department_id');
+            $department_id = $req->input('department_id');
         }
 
         User::create([
             'name' => $req->input('name'),
             'last_name' => $req->input('last_name'),
+            'department_id' => $department_id,
             'role' => $req->input('role'),
             'email' => $req->input('email'),
             'password' => Hash::make($req->input('password')),
@@ -76,6 +77,7 @@ class AdminController extends Controller
 
     }
 
+    // in case that employee type is user it needs to display departments
     $query = "SELECT id, name FROM departments ORDER BY id DESC";
 
     $departments = DB::select($query);
@@ -90,8 +92,6 @@ class AdminController extends Controller
             ->select(DB::raw('departments.id AS department_id, departments.name AS department_name, users.id, users.name, users.last_name, users.role, users.email'))
             ->join('users', 'departments.id', '=', 'users.department_id')
             ->get();
-
-        dd($users);
 
         return view('dashboards.admins.manageemployee', ['users' => $users]);
 
