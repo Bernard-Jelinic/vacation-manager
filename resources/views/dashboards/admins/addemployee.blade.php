@@ -15,7 +15,7 @@
         }
     </style>
 
-    <script type="text/javascript">
+    {{-- <script type="text/javascript">
         
         $(document).ready(function(){
 
@@ -32,7 +32,7 @@
 
         });
 
-    </script>
+    </script> --}}
 
     <div class="container-fluid col-lg-5">
         <form method="post" enctype="multipart/form-data"><br>
@@ -62,7 +62,7 @@
             </div>
 
             <div class="form-group">
-                <label>Employees Role *</label>
+                <label>Role *</label>
                 <select class="form-control @error('role') error-border @enderror" id="role" name="role" required>
                     <option>Select role</option>
                     {{-- <option value="admin">Admin</option> --}}
@@ -78,8 +78,9 @@
             </div>
 
             
-            <div id="show" class="form-group" hidden>
-                <label>Users Department *</label>
+            {{-- <div id="show" class="form-group" hidden> --}}
+            <div class="form-group">
+                <label>Department *</label>
                 <select class="form-control @error('department_id') error-border @enderror" id="department_id" name="department_id" required>
                     <option>Select department</option>
 
@@ -91,6 +92,7 @@
                 @error('department_id')
                     <div class="error-text">
                         {{ $message }}
+                        {{-- {{ 'The department must be selected.' }} --}}
                     </div>
                 @enderror
             </div>

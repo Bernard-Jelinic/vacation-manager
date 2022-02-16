@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Department;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -49,24 +50,18 @@ class AdminController extends Controller
             'name'=>'required|alpha',
             'last_name'=>'required|alpha',
             'role'=>'required|alpha',
+            'department_id'=>'required',
             'email'=>'required|email|unique:users',
             'password' => 'required|confirmed',
         ]);
 
         $date = date("Y-m-d H:i:s");
 
-        $department_id = NULL;
-
-        // in case that employee type is manager it doesn't need to be saved
-        if ($req->input('department_id')!=='Select department') {
-            $department_id = $req->input('department_id');
-        }
-
         User::create([
             'name' => $req->input('name'),
             'last_name' => $req->input('last_name'),
-            'department_id' => $department_id,
             'role' => $req->input('role'),
+            'department_id' => $req->input('department_id'),
             'email' => $req->input('email'),
             'password' => Hash::make($req->input('password')),
             'created_at' => $date,
@@ -77,10 +72,12 @@ class AdminController extends Controller
 
     }
 
-    // in case that employee type is user it needs to display departments
+    // it needs to display departments
     $query = "SELECT id, name FROM departments ORDER BY id DESC";
 
     $departments = DB::select($query);
+
+    // $departments = Department::all();
 
     return view('dashboards.admins.addemployee', ['departments' => $departments]);
 
@@ -88,12 +85,12 @@ class AdminController extends Controller
 
     function manageemployee(){
 
-        $users = DB::table('departments')
+        $employees = DB::table('departments')
             ->select(DB::raw('departments.id AS department_id, departments.name AS department_name, users.id, users.name, users.last_name, users.role, users.email'))
             ->join('users', 'departments.id', '=', 'users.department_id')
             ->get();
 
-        return view('dashboards.admins.manageemployee', ['users' => $users]);
+        return view('dashboards.admins.manageemployee', ['employees' => $employees]);
 
     }
 

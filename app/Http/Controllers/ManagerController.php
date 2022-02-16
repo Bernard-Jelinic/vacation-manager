@@ -44,12 +44,19 @@ class ManagerController extends Controller
     function allvacations(Request $req){
 
         $manager_id = Auth::user()->id;
+        // dd($manager_id);
+
+        // $department_id= DB::table('users')
+        //     ->where('id', '=', $manager_id)
+            // ->where('vacations.status', '=', 2)
+            // ->update($data);
 
         $vacation_datas = DB::table('vacations')
-            ->select(DB::raw('vacations.id, vacations.depart, vacations.return, vacations.created_at, vacations.user_notified, vacations.status, users.name, users.last_name, departments.manager_id AS manager_id'))
-            ->where('manager_id', '=', $manager_id)
+            // ->select(DB::raw('vacations.id, vacations.depart, vacations.return, vacations.created_at, vacations.user_notified, vacations.status, users.name, users.last_name, departments.manager_id AS manager_id'))
+            ->select(DB::raw('vacations.id, vacations.depart, vacations.return, vacations.created_at, vacations.user_notified, vacations.status, users.name, users.last_name'))
+            ->where('department_id', '=', $manager_id)
             ->join('users', 'vacations.user_id', '=', 'users.id')
-            ->join('departments', 'users.department_id', '=', 'departments.id')
+            // ->join('departments', 'users.department_id', '=', 'departments.id')
             ->get();
 
         $manager_ids = array();

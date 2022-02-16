@@ -11,4 +11,10 @@ class Department extends Model
 
     protected $table = 'departments';
 
+    // protected $fillable = [
+    //     'id',
+    //     'name',
+    //     'updated_at'
+    // ];
+
 }

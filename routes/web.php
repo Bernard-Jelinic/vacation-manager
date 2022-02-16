@@ -63,12 +63,12 @@ Route::group(['prefix'=>'admin', 'middleware'=>['isAdmin','auth','PreventBackHis
     Route::post('manageemployee/edit/{id}',[AdminController::class,'editemployee']);
     Route::post('manageemployee/delete/{id}',[AdminController::class,'deleteemployee']);
 
-    Route::get('allvacations',[AdminController::class,'allvacations'])->name('allvacations');
+    Route::get('allvacations',[AdminController::class,'allvacations'])->name('admin.allvacations');
     Route::get('editvacation/{id}',[AdminController::class,'editvacation']);
     Route::post('editvacation/{id}',[AdminController::class,'editvacation']);
-    Route::get('pendingvacations',[AdminController::class,'pendingvacations'])->name('pendingvacations');
-    Route::get('approvedvacations',[AdminController::class,'approvedvacations'])->name('approvedvacations');
-    Route::get('notapprovedvacations',[AdminController::class,'notapprovedvacations'])->name('notapprovedvacations');
+    Route::get('pendingvacations',[AdminController::class,'pendingvacations'])->name('admin.pendingvacations');
+    Route::get('approvedvacations',[AdminController::class,'approvedvacations'])->name('admin.approvedvacations');
+    Route::get('notapprovedvacations',[AdminController::class,'notapprovedvacations'])->name('admin.notapprovedvacations');
        
 });
 
@@ -77,12 +77,12 @@ Route::group(['prefix'=>'manager', 'middleware'=>['isManager','auth','PreventBac
     Route::get('dashboard',[ManagerController::class,'index'])->name('manager.dashboard');
     Route::get('fetchnotification',[ManagerController::class,'fetchnotification']);
 
-    Route::get('allvacations',[ManagerController::class,'allvacations'])->name('allvacations');
+    Route::get('allvacations',[ManagerController::class,'allvacations'])->name('manager.allvacations');
     Route::get('editvacation/{id}',[ManagerController::class,'editvacation']);
     Route::post('editvacation/{id}',[ManagerController::class,'editvacation']);
-    Route::get('pendingvacations',[ManagerController::class,'pendingvacations'])->name('pendingvacations');
-    Route::get('approvedvacations',[ManagerController::class,'approvedvacations'])->name('approvedvacations');
-    Route::get('notapprovedvacations',[ManagerController::class,'notapprovedvacations'])->name('notapprovedvacations');
+    Route::get('pendingvacations',[ManagerController::class,'pendingvacations'])->name('manager.pendingvacations');
+    Route::get('approvedvacations',[ManagerController::class,'approvedvacations'])->name('manager.approvedvacations');
+    Route::get('notapprovedvacations',[ManagerController::class,'notapprovedvacations'])->name('manager.notapprovedvacations');
     
 });
 

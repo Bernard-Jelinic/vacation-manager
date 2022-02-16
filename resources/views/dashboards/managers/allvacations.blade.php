@@ -19,7 +19,7 @@
         <table class="table table-striped table-hover">
 
             <thead>
-                <tr><th>User</th><th>User Id</th><th>Depart date</th><th>Return date</th><th>Date od application</th><th>Status</th><th>Action</th></tr>
+                <tr><th>User</th><th>Vacation Id</th><th>Depart date</th><th>Return date</th><th>Date od application</th><th>Status</th><th>Action</th></tr>
             </thead>
 
             <tbody>

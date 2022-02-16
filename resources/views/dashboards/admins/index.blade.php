@@ -68,7 +68,7 @@
                         </a>
                         <ul class="sub">
                             <li><a href="{{route('adddepartment')}}">Add Department</a></li>
-                            <li><a href="{{url('admin/managedepartments')}}">Manage Departments</a></li>
+                            <li><a href="{{route('managedepartments')}}">Manage Departments</a></li>
                         </ul>
                     </li>
                     
@@ -90,10 +90,10 @@
                         </a>
 
                         <ul class="sub">
-                            <li><a href="{{url('admin/allvacations')}}">All Vacations</a></li>
-                            <li><a href="{{url('admin/pendingvacations')}}">Pending Vacations</a></li>
-                            <li><a href="{{url('admin/approvedvacations')}}">Approved Vacations</a></li>
-                            <li><a href="{{url('admin/notapprovedvacations')}}">Not Approved Vacations</a></li>
+                            <li><a href="{{route('admin.allvacations')}}">All Vacations</a></li>
+                            <li><a href="{{route('admin.pendingvacations')}}">Pending Vacations</a></li>
+                            <li><a href="{{route('admin.approvedvacations')}}">Approved Vacations</a></li>
+                            <li><a href="{{route('admin.notapprovedvacations')}}">Not Approved Vacations</a></li>
                         </ul>
                     </li>
 

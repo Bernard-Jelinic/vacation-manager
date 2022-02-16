@@ -14,16 +14,16 @@
             </thead>
 
             <tbody>
-                @if ($users)
-                    @foreach ($users as $user)
+                @if ($employees)
+                    @foreach ($employees as $employee)
 
-                        <tr><td>{{$user->name . ' ' . $user->last_name}}</td><td>{{$user->role}}</td><td>{{$user->department_name}}</td><td>{{$user->email}}</td>
+                        <tr><td>{{$employee->name . ' ' . $employee->last_name}}</td><td>{{$employee->role}}</td><td>{{$employee->department_name}}</td><td>{{$employee->email}}</td>
                             <td>
                         
-                                <a href="{{url('admin/manageemployee/edit/'.$user->id)}}">
+                                <a href="{{url('admin/manageemployee/edit/'.$employee->id)}}">
                                     <button class="btn-sm btn btn-success"><i class="fa fa-edit"></i> Edit</button>
                                 </a>
-                                <form action="{{url('admin/manageemployee/delete/'.$user->id)}}" method="post">
+                                <form action="{{url('admin/manageemployee/delete/'.$employee->id)}}" method="post">
                                     @csrf
                                     <button type="submit" class="btn-sm btn btn-warning"><i class="fa fa-times"></i> Delete</button>
                                 </form>
