@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use App\Models\Department;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -57,7 +55,7 @@ class AdminController extends Controller
 
         $date = date("Y-m-d H:i:s");
 
-        User::create([
+        $data = [
             'name' => $req->input('name'),
             'last_name' => $req->input('last_name'),
             'role' => $req->input('role'),
@@ -65,8 +63,10 @@ class AdminController extends Controller
             'email' => $req->input('email'),
             'password' => Hash::make($req->input('password')),
             'created_at' => $date,
-            'updated_at' => $date,
-        ]);
+            'updated_at' => $date
+        ];
+
+        DB::table('users')->insert($data);
 
         return redirect('admin/manageemployee');
 
@@ -76,8 +76,6 @@ class AdminController extends Controller
     $query = "SELECT id, name FROM departments ORDER BY id DESC";
 
     $departments = DB::select($query);
-
-    // $departments = Department::all();
 
     return view('dashboards.admins.addemployee', ['departments' => $departments]);
 
@@ -187,11 +185,9 @@ class AdminController extends Controller
 
             $validated = $req->validate([
                 'name' => 'required|string',
-                'manager_id' => 'required|string',
             ]);
 
             $data['name'] = $req->input('name');
-            $data['manager_id'] = $req->input('manager_id');
 
             DB::table('departments')->insert($data);
 
@@ -199,19 +195,13 @@ class AdminController extends Controller
 
         }
 
-        $query = "SELECT id,name FROM users WHERE role = 'manager' ORDER BY id DESC";
-
-        $managers = DB::select($query);
-
-        return view('dashboards.admins.adddepartment',[
-            'managers' => $managers,
-        ]);
+        return view('dashboards.admins.adddepartment');
 
    }
 
     function managedepartments(){
 
-        $query = "SELECT departments.id AS department_id, departments.name AS department_name, departments.manager_id,users.name AS user_name, users.last_name FROM departments JOIN users ON departments.manager_id = users.id";
+        $query = "SELECT departments.id AS department_id, departments.name AS department_name,users.name AS user_name, users.last_name FROM departments JOIN users ON departments.id = users.id";
 
         $departments = DB::select($query);
 

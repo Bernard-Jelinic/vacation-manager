@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 01, 2022 at 10:42 AM
+-- Generation Time: Feb 17, 2022 at 06:04 AM
 -- Server version: 10.4.22-MariaDB
 -- PHP Version: 8.1.1
 
@@ -30,7 +30,6 @@ SET time_zone = "+00:00";
 CREATE TABLE `departments` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `name` varchar(150) NOT NULL,
-  `manager_id` bigint(20) NOT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -38,10 +37,10 @@ CREATE TABLE `departments` (
 -- Dumping data for table `departments`
 --
 
-INSERT INTO `departments` (`id`, `name`, `manager_id`, `updated_at`) VALUES
-(1, 'Development', 5, '2022-02-01 09:37:06'),
-(2, 'Sales', 6, '2022-02-01 09:37:12'),
-(3, 'Finance', 7, '2022-02-01 09:37:19');
+INSERT INTO `departments` (`id`, `name`, `updated_at`) VALUES
+(1, 'Development', '2022-02-01 09:37:06'),
+(2, 'Sales', '2022-02-01 09:37:12'),
+(3, 'Finance', '2022-02-01 09:37:19');
 
 -- --------------------------------------------------------
 
@@ -140,9 +139,9 @@ INSERT INTO `users` (`id`, `name`, `last_name`, `role`, `department_id`, `email`
 (2, 'Bernard', 'Jelinić', 'user', 2, 'jelinic@gmail.com', NULL, '$2y$10$q06h2WGVbrvAy4azTwXxJ.Y4GuO26Dcyvm7SBIpJyi.38BT9tIup.', NULL, '2022-01-26 02:35:08', '2022-01-27 03:40:42'),
 (3, 'Matea', 'Mokricki', 'user', 3, 'matea@gmail.com', NULL, '$2y$10$Shx8A00IQisbIDBSnW8Q.OpT9oqTId8zpiKCNywjrdKKJnK07nTgu', NULL, '2022-01-29 12:05:33', '2022-01-29 12:05:33'),
 (4, 'Ivan', 'Jelinić', 'user', 1, 'ivan@gmail.com', NULL, '$2y$10$Ez3o/0ChyTfiHVswfsMUXeG12/uw1ukLDckg5pydtR6Xc055/sBEe', NULL, '2022-01-30 09:46:35', '2022-01-30 09:46:35'),
-(5, 'Josip', 'Josipović', 'manager', NULL, 'josip@gmail.com', NULL, '$2y$10$xdI5HnJoA6SovmY3c0hZW.uQzmO2o3N9UGJFubbOrqBZeqMrulYfC', NULL, '2022-01-31 03:17:49', '2022-01-31 03:17:49'),
-(6, 'Pero', 'Perić', 'manager', NULL, 'pero@gmail.com', NULL, '$2y$10$o3sSfMI0kSinX13ACZqH6eDvIqEO1eum2FA.6dCQ6.tImiUQTPtQi', NULL, '2022-01-31 15:42:55', '2022-01-31 15:42:55'),
-(7, 'Ivo', 'Ivić', 'manager', NULL, 'ivo@gmail.com', NULL, '$2y$10$wuBuASrBRQ0nm2EUPqOviOP5qkPWPqM34MF2Dv0Ri97jieYg890V2', NULL, '2022-01-31 15:44:17', '2022-01-31 15:44:17'),
+(5, 'Josip', 'Josipović', 'manager', 1, 'josip@gmail.com', NULL, '$2y$10$xdI5HnJoA6SovmY3c0hZW.uQzmO2o3N9UGJFubbOrqBZeqMrulYfC', NULL, '2022-01-31 03:17:49', '2022-01-31 03:17:49'),
+(6, 'Pero', 'Perić', 'manager', 2, 'pero@gmail.com', NULL, '$2y$10$o3sSfMI0kSinX13ACZqH6eDvIqEO1eum2FA.6dCQ6.tImiUQTPtQi', NULL, '2022-01-31 15:42:55', '2022-01-31 15:42:55'),
+(7, 'Ivo', 'Ivić', 'manager', 3, 'ivo@gmail.com', NULL, '$2y$10$wuBuASrBRQ0nm2EUPqOviOP5qkPWPqM34MF2Dv0Ri97jieYg890V2', NULL, '2022-01-31 15:44:17', '2022-01-31 15:44:17'),
 (8, 'Josipa', 'Jelinić', 'user', 1, 'josipa@gmail.com', NULL, '$2y$10$rHhOp35sDy2hS5PExBHZ2eOCehqp1PXzQngZxbyO7qu6ld.h3YC/u', NULL, '2022-01-31 15:45:33', '2022-01-31 15:45:33'),
 (9, 'Miroslav', 'Jelinić', 'user', 2, 'miroslav@gmail.com', NULL, '$2y$10$qHDMZbUzEgkoV9qkdc0eAuVlCDDJY6n9oCQ6TMyQLOrTw0W5rIHR.', NULL, '2022-01-31 15:48:59', '2022-01-31 15:48:59'),
 (10, 'Olivera', 'Jelinić', 'user', 3, 'olivera@gmail.com', NULL, '$2y$10$NR5aodqbY0mhH0pPX82n1ecaQdUQOanNI.Q5fQosYWKngP/uoUvCu', NULL, '2022-01-31 15:49:49', '2022-01-31 15:49:49');
@@ -172,11 +171,11 @@ CREATE TABLE `vacations` (
 
 INSERT INTO `vacations` (`id`, `depart`, `return`, `created_at`, `updated_at`, `status`, `admin_read`, `manager_read`, `user_notified`, `user_id`) VALUES
 (19, '2022-01-31 23:00:00', '2022-02-03 23:00:00', '2022-01-29 03:34:18', '2022-01-31 01:41:46', 1, 1, 1, 1, 2),
-(20, '2022-01-31 23:00:00', '2022-02-03 23:00:00', '2022-01-29 03:48:15', '2022-01-29 03:48:15', 0, 1, 0, 0, 10),
+(20, '2022-01-31 23:00:00', '2022-02-03 23:00:00', '2022-01-29 03:48:15', '2022-01-29 03:48:15', 0, 1, 1, 0, 10),
 (21, '2022-02-28 23:00:00', '2022-03-03 23:00:00', '2022-01-29 03:48:32', '2022-01-31 03:29:13', 1, 1, 1, 0, 3),
-(22, '2022-02-08 23:00:00', '2022-02-27 23:00:00', '2022-01-29 05:19:55', '2022-01-29 05:19:55', 1, 1, 1, 0, 2),
-(23, '2022-01-31 23:00:00', '2022-02-01 23:00:00', '2022-01-29 05:20:29', '2022-01-29 11:29:22', 0, 1, 0, 0, 2),
-(24, '2022-01-31 23:00:00', '2022-02-02 23:00:00', '2022-01-29 05:23:32', '2022-01-29 05:23:32', 0, 1, 0, 1, 2),
+(22, '2022-02-08 23:00:00', '2022-02-27 23:00:00', '2022-01-29 05:19:55', '2022-01-29 05:19:55', 1, 1, 1, 1, 2),
+(23, '2022-01-31 23:00:00', '2022-02-01 23:00:00', '2022-01-29 05:20:29', '2022-01-29 11:29:22', 0, 1, 1, 1, 2),
+(24, '2022-01-31 23:00:00', '2022-02-02 23:00:00', '2022-01-29 05:23:32', '2022-01-29 05:23:32', 0, 1, 1, 1, 2),
 (25, '2022-01-31 23:00:00', '2022-02-18 23:00:00', '2022-01-30 06:43:55', '2022-01-30 06:55:41', 0, 1, 1, 1, 4),
 (26, '2022-02-19 23:00:00', '2022-02-25 23:00:00', '2022-01-30 09:47:01', '2022-01-30 09:48:03', 1, 1, 1, 1, 8),
 (29, '2022-02-05 23:00:00', '2022-02-11 23:00:00', '2022-01-31 03:19:18', '2022-01-31 03:30:22', 2, 1, 1, 1, 9);
@@ -242,7 +241,7 @@ ALTER TABLE `vacations`
 -- AUTO_INCREMENT for table `departments`
 --
 ALTER TABLE `departments`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT for table `failed_jobs`
@@ -266,7 +265,7 @@ ALTER TABLE `personal_access_tokens`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- AUTO_INCREMENT for table `vacations`

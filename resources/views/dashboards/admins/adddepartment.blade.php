@@ -22,21 +22,6 @@
                 <input value="{{old('name')}}" id="name" type="text" class="form-control" placeholder="Department Name" name="name" required autofocus>
             </div>
 
-            <div class="form-group">
-                <label>Department Manager</label>
-
-                <select id="manager_id" name="manager_id" class="form-control" required>
-                    <option></option>
-                    <?php if(is_array($managers)): ?>
-                        <?php foreach($managers as $manager): ?>
-
-                            <option value="<?=$manager->id?>"><?=$manager->name?></option>
-
-                        <?php endforeach; ?>
-                    <?php endif; ?>
-                </select>
-            </div>
-
             @csrf
             <button class="btn btn-primary" type="submit">Post</button>
 
