@@ -6,17 +6,18 @@
         
         $(document).ready(function(){
 
-            if ($("#role option:selected").val() == 'user') {
-                $("#show").show();
+            if ($("#role option:selected").val() == 'admin') {
+                // console.log($("#role option:selected").val());
+                $("#show").hide();
             }
-
-            // console.log($("#role option:selected").val());
 
             $("#role").change(function() {
 
-                if (this.value == 'user') {
-
-                     $("#show").show();
+                if (this.value == 'admin') {
+                    // console.log($("#role option:selected").val());
+                     $("#show").hide();
+                }else{
+                    $("#show").show();
                 }
             });
 
@@ -69,11 +70,11 @@
                 </select>
             </div>
 
-            <div id="show" class="form-group" hidden>
-                <label>Users Department * </label>
+            <div id="show" class="form-group">
+                <label>Employees Department * </label>
+
                 <select class="form-control" id="department_id" name="department_id" required>
                     <option>Select department</option>
-
                     @foreach ($employee as $key)
                         @foreach ($departments as $department)
                             <option value="{{$department->id}}" {{$department->id == $key->department_id ? 'selected':''}}>{{$department->name}}</option>
@@ -91,6 +92,16 @@
             <div class="form-group">
                 <label>Password</label>
                 <input class="form-control" type="password" placeholder="Password" name="password" value="{{old('password')}}"/>
+            </div>
+
+            <div class="form-group">
+                <label>Confirm Password *</label>
+                <input class="form-control @error('password_confirmation') error-border @enderror" type="password" placeholder="Confirm Password" name="password_confirmation" value="{{old('password_confirmation')}}"/>
+                @error('password_confirmation')
+                    <div class="error-text">
+                        {{ $message }}
+                    </div>
+                @enderror
             </div>
 
             @csrf

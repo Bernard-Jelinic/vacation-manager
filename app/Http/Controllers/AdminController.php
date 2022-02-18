@@ -40,44 +40,136 @@ class AdminController extends Controller
 
     }
 
-    function addemployee(Request $req){
+    function adddepartment(Request $req, $type = '',$id = ''){
 
-    if($req->method() == 'POST'){
+        if($req->method() == 'POST'){
 
-        $validated = $req->validate([
-            'name'=>'required|alpha',
-            'last_name'=>'required|alpha',
-            'role'=>'required|alpha',
-            'department_id'=>'required',
-            'email'=>'required|email|unique:users',
-            'password' => 'required|confirmed',
-        ]);
+            $validated = $req->validate([
+                'name' => 'required|string',
+            ]);
 
-        $date = date("Y-m-d H:i:s");
+            $data['name'] = $req->input('name');
 
-        $data = [
-            'name' => $req->input('name'),
-            'last_name' => $req->input('last_name'),
-            'role' => $req->input('role'),
-            'department_id' => $req->input('department_id'),
-            'email' => $req->input('email'),
-            'password' => Hash::make($req->input('password')),
-            'created_at' => $date,
-            'updated_at' => $date
-        ];
+            DB::table('departments')->insert($data);
 
-        DB::table('users')->insert($data);
+            return redirect('admin/managedepartments');
 
-        return redirect('admin/manageemployee');
+        }
+
+        return view('dashboards.admins.adddepartment');
 
     }
 
-    // it needs to display departments
-    $query = "SELECT id, name FROM departments ORDER BY id DESC";
+    function managedepartments(){
 
-    $departments = DB::select($query);
+        $departments = DB::table('departments')
+            ->select(DB::raw('departments.id AS department_id, departments.name AS department_name,users.name AS user_name, users.last_name'))
+            ->join('users', 'departments.id', '=', 'users.department_id')
+            ->where('role', '=', 'manager')
+            ->get();
 
-    return view('dashboards.admins.addemployee', ['departments' => $departments]);
+        return view('dashboards.admins.managedepartments', ['departments' => $departments]);
+
+    }
+
+    function editdepartment(Request $req){
+
+        $id = $req->route()->id;
+
+        // dd($id);
+
+        if($req->method() == 'POST'){
+
+            $validated = $req->validate([
+                'name' => 'required|string',
+                //'manager_id' => 'required|string',
+            ]);
+
+            $data['name'] = $req->input('name');
+            //$data['manager_id'] = $req->input('manager_id');
+            $data['updated_at'] = date("Y-m-d H:i:s");
+
+            DB::table('departments')
+                ->where('id',$id)
+                ->update($data);
+
+            return redirect('admin/managedepartments');
+
+        }
+
+        // $query = "SELECT departments.*,users.name AS user_name, users.last_name AS user_last_name, users.role AS user_role FROM departments JOIN users ON departments.id = users.department_id WHERE departments.id ={$id}";
+
+        // $department = DB::select($query);
+
+        $department = DB::table('departments')
+                ->select('name')
+                ->where('id', '=', $id)
+                ->get();
+
+        //dd($department);
+
+        // $query_managers = "SELECT id, name, last_name FROM users WHERE role='manager'";
+
+        // $managers = DB::select($query_managers);
+
+        // return view('dashboards.admins.editdepartment', ['department' => $department, 'managers' => $managers]);
+        return view('dashboards.admins.editdepartment', ['department' => $department]);
+
+    }
+
+    function deletedepartment(Request $req){
+
+        $id = $req->route()->id;
+
+        if($req->method() == 'POST'){
+
+            DB::table('departments')->delete($id);
+
+            return redirect('admin/managedepartments');
+            
+        }
+
+    }
+
+    function addemployee(Request $req){
+
+        if($req->method() == 'POST'){
+
+            $validated = $req->validate([
+                'name'=>'required|alpha',
+                'last_name'=>'required|alpha',
+                'role'=>'required|alpha',
+                'department_id'=>'required',
+                'email'=>'required|email|unique:users',
+                'password' => 'required|confirmed',
+            ]);
+
+            $date = date("Y-m-d H:i:s");
+
+            $data = [
+                'name' => $req->input('name'),
+                'last_name' => $req->input('last_name'),
+                'role' => $req->input('role'),
+                'department_id' => $req->input('department_id'),
+                'email' => $req->input('email'),
+                'password' => Hash::make($req->input('password')),
+                'created_at' => $date,
+                'updated_at' => $date
+            ];
+
+            DB::table('users')->insert($data);
+
+            return redirect('admin/manageemployee');
+
+        }
+
+        // it needs to display departments
+        $departments = DB::table('departments')
+                    ->select('id', 'name')
+                    ->orderBy('id', 'DESC')
+                    ->get();
+
+        return view('dashboards.admins.addemployee', ['departments' => $departments]);
 
     }
 
@@ -103,8 +195,10 @@ class AdminController extends Controller
 
             $date = date("Y-m-d H:i:s");
 
-            $query = "SELECT email FROM users WHERE id={$id}";
-            $user_email = DB::select($query);
+            $user_email = DB::table('users')
+                    ->select('email')
+                    ->where('id', $id)
+                    ->get();
 
             // in case of changed email
             if($user_email[0]->email !== $email){
@@ -121,7 +215,7 @@ class AdminController extends Controller
             if(isset($password) || trim($password) !== '') {
 
                 $validated = $req->validate([
-                    'password'=>'required'
+                    'password' => 'required|confirmed',
                 ]);
 
                 $data['password'] = Hash::make($req->input('password'));
@@ -153,9 +247,10 @@ class AdminController extends Controller
             ->join('users', 'departments.id', '=', 'users.department_id')
             ->get();
 
-        $query_depart = "SELECT id, name FROM departments ORDER BY id DESC";
-
-        $departments = DB::select($query_depart);
+        $departments = DB::table('departments')
+            ->select('id', 'name')
+            ->orderBy('id', 'DESC')
+            ->get();
 
         return view('dashboards.admins.editemployee', ['employee' => $employee,'departments' => $departments]);
 
@@ -178,85 +273,6 @@ class AdminController extends Controller
         }
 
    }
-
-    function adddepartment(Request $req, $type = '',$id = ''){
-
-        if($req->method() == 'POST'){
-
-            $validated = $req->validate([
-                'name' => 'required|string',
-            ]);
-
-            $data['name'] = $req->input('name');
-
-            DB::table('departments')->insert($data);
-
-            return redirect('admin/managedepartments');
-
-        }
-
-        return view('dashboards.admins.adddepartment');
-
-   }
-
-    function managedepartments(){
-
-        $query = "SELECT departments.id AS department_id, departments.name AS department_name,users.name AS user_name, users.last_name FROM departments JOIN users ON departments.id = users.id";
-
-        $departments = DB::select($query);
-
-        return view('dashboards.admins.managedepartments', ['departments' => $departments]);
-
-    }
-
-    function editdepartment(Request $req){
-
-        $id = $req->route()->id;
-
-        if($req->method() == 'POST'){
-
-            $validated = $req->validate([
-                'name' => 'required|string',
-                'manager_id' => 'required|string',
-            ]);
-
-            $data['name'] = $req->input('name');
-            $data['manager_id'] = $req->input('manager_id');
-            $data['updated_at'] = date("Y-m-d H:i:s");
-
-            DB::table('departments')
-                ->where('id',$id)
-                ->update($data);
-
-            return redirect('admin/managedepartments');
-
-        }
-
-        $query = "SELECT departments.*,users.name AS user_name, users.last_name AS user_last_name, users.role AS user_role FROM departments JOIN users ON departments.manager_id = users.id WHERE departments.id ={$id}";
-
-        $department = DB::select($query);
-
-        $query_managers = "SELECT id, name, last_name FROM users WHERE role='manager'";
-
-        $managers = DB::select($query_managers);
-
-        return view('dashboards.admins.editdepartment', ['department' => $department, 'managers' => $managers]);
-
-    }
-
-    function deletedepartment(Request $req){
-
-        $id = $req->route()->id;
-
-        if($req->method() == 'POST'){
-
-            DB::table('departments')->delete($id);
-
-            return redirect('admin/managedepartments');
-            
-        }
-
-    }
 
     function allvacations(Request $req){
 

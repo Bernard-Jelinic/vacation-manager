@@ -28,7 +28,7 @@
                 @endforeach
             @endif
 
-            <div class="form-group">
+            {{-- <div class="form-group">
                 <label>Department Manager</label>
 
                 <select id="manager_id" name="manager_id" class="form-control" required>
@@ -48,7 +48,7 @@
                     <?php endif; ?>
 
                 </select>
-            </div>
+            </div> --}}
 
             @csrf
             <input class="btn btn-primary" type="submit" value="Change">

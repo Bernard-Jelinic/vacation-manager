@@ -41,12 +41,12 @@ Route::middleware(['middleware'=>'PreventBackHistory'])->group(function () {
 });
 
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+// Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 
 Route::group(['prefix'=>'admin', 'middleware'=>['isAdmin','auth','PreventBackHistory']], function(){
 
-    Route::get('dashboard',[AdminController::class,'index'])->name('admin.dashboard');
+    Route::get('',[AdminController::class,'index'])->name('admin.dashboard');
     Route::get('fetchnotification',[AdminController::class,'fetchnotification']);
 
     Route::get('adddepartment',[AdminController::class,'adddepartment'])->name('adddepartment');
