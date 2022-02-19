@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 17, 2022 at 06:04 AM
+-- Generation Time: Feb 19, 2022 at 12:23 PM
 -- Server version: 10.4.22-MariaDB
 -- PHP Version: 8.1.1
 
@@ -38,9 +38,9 @@ CREATE TABLE `departments` (
 --
 
 INSERT INTO `departments` (`id`, `name`, `updated_at`) VALUES
-(1, 'Development', '2022-02-01 09:37:06'),
-(2, 'Sales', '2022-02-01 09:37:12'),
-(3, 'Finance', '2022-02-01 09:37:19');
+(1, 'Development', '2022-02-19 07:51:55'),
+(2, 'Sales', '2022-02-19 07:26:52'),
+(3, 'Finance', '2022-02-19 07:27:02');
 
 -- --------------------------------------------------------
 
@@ -135,11 +135,11 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `last_name`, `role`, `department_id`, `email`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, 'Jozo', 'Jozić', 'admin', NULL, 'jozo@gmail.com', NULL, '$2y$10$35.bci0mU7zxhTA3YpsMOOOQ7cQbdr7sPczBBsRzbrq2HhciIFZZK', NULL, '2022-01-31 15:40:29', '2022-01-31 15:40:29'),
-(2, 'Bernard', 'Jelinić', 'user', 2, 'jelinic@gmail.com', NULL, '$2y$10$q06h2WGVbrvAy4azTwXxJ.Y4GuO26Dcyvm7SBIpJyi.38BT9tIup.', NULL, '2022-01-26 02:35:08', '2022-01-27 03:40:42'),
-(3, 'Matea', 'Mokricki', 'user', 3, 'matea@gmail.com', NULL, '$2y$10$Shx8A00IQisbIDBSnW8Q.OpT9oqTId8zpiKCNywjrdKKJnK07nTgu', NULL, '2022-01-29 12:05:33', '2022-01-29 12:05:33'),
+(1, 'Stjepan', 'Stjepić', 'admin', NULL, 'stjepan@gmail.com', NULL, '$2y$10$QI4aBhFojmoJvU8IJhNzcuH9eGzJkdhMPqiGofvvHDpFicaJVEWSG', NULL, '2022-01-31 15:40:29', '2022-02-19 10:14:15'),
+(2, 'Bernard', 'Jelinić', 'user', 2, 'jelinic@gmail.com', NULL, '$2y$10$w3opX36OCF./xc5pVsn7kOen/zB6119RZTShsYI15r8.ziEeUXDV6', NULL, '2022-01-26 02:35:08', '2022-02-19 10:15:36'),
+(3, 'Matea', 'Mokricki', 'user', 3, 'mokricki@gmail.com', NULL, '$2y$10$k5xpXoz/sWldYzh1i067F.MqCtVEG4bFL5Z.H1NwlUS1IG4yUQacq', NULL, '2022-01-29 12:05:33', '2022-02-18 03:52:26'),
 (4, 'Ivan', 'Jelinić', 'user', 1, 'ivan@gmail.com', NULL, '$2y$10$Ez3o/0ChyTfiHVswfsMUXeG12/uw1ukLDckg5pydtR6Xc055/sBEe', NULL, '2022-01-30 09:46:35', '2022-01-30 09:46:35'),
-(5, 'Josip', 'Josipović', 'manager', 1, 'josip@gmail.com', NULL, '$2y$10$xdI5HnJoA6SovmY3c0hZW.uQzmO2o3N9UGJFubbOrqBZeqMrulYfC', NULL, '2022-01-31 03:17:49', '2022-01-31 03:17:49'),
+(5, 'Josip', 'Josipović', 'manager', 1, 'josip@gmail.com', NULL, '$2y$10$xdI5HnJoA6SovmY3c0hZW.uQzmO2o3N9UGJFubbOrqBZeqMrulYfC', NULL, '2022-01-31 03:17:49', '2022-02-19 10:16:06'),
 (6, 'Pero', 'Perić', 'manager', 2, 'pero@gmail.com', NULL, '$2y$10$o3sSfMI0kSinX13ACZqH6eDvIqEO1eum2FA.6dCQ6.tImiUQTPtQi', NULL, '2022-01-31 15:42:55', '2022-01-31 15:42:55'),
 (7, 'Ivo', 'Ivić', 'manager', 3, 'ivo@gmail.com', NULL, '$2y$10$wuBuASrBRQ0nm2EUPqOviOP5qkPWPqM34MF2Dv0Ri97jieYg890V2', NULL, '2022-01-31 15:44:17', '2022-01-31 15:44:17'),
 (8, 'Josipa', 'Jelinić', 'user', 1, 'josipa@gmail.com', NULL, '$2y$10$rHhOp35sDy2hS5PExBHZ2eOCehqp1PXzQngZxbyO7qu6ld.h3YC/u', NULL, '2022-01-31 15:45:33', '2022-01-31 15:45:33'),
@@ -241,7 +241,7 @@ ALTER TABLE `vacations`
 -- AUTO_INCREMENT for table `departments`
 --
 ALTER TABLE `departments`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT for table `failed_jobs`

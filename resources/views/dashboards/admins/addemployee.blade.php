@@ -2,38 +2,6 @@
 
 @section('addemployee')
 
-    <style>
-        .error-border{
-            /* border: none;
-            border-bottom: 2px solid red; */
-            border: 2px solid red;
-            border-radius: 4px;
-        }
-
-        .error-text{
-            color: red;
-        }
-    </style>
-
-    {{-- <script type="text/javascript">
-        
-        $(document).ready(function(){
-
-            //  because it only needs to be displayed if user select type of user
-            $("#role").change(function() {
-
-                if (this.value == 'user') {
-
-                     $("#show").show();
-                }else{
-                    $("#show").hide();
-                }
-            });
-
-        });
-
-    </script> --}}
-
     <div class="container-fluid col-lg-5">
         <form method="post" enctype="multipart/form-data"><br>
 
@@ -76,7 +44,6 @@
                     </div>
                 @enderror
             </div>
-
             
             {{-- <div id="show" class="form-group" hidden> --}}
             <div class="form-group">

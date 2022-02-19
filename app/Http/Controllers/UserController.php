@@ -41,6 +41,68 @@ class UserController extends Controller
 
     }
 
+    function userprofile(Request $req){
+
+        $id = Auth::user()->id;
+
+        if($req->method() == 'POST'){
+
+            $email = $req->input('email');
+            $password = $req->input('password');
+
+            $date = date("Y-m-d H:i:s");
+
+            $user_email = DB::table('users')
+                    ->select('email')
+                    ->where('id', $id)
+                    ->get();
+
+            // in case of changed email
+            if($user_email[0]->email !== $email){
+                
+                $validated = $req->validate([
+                    'email'=>'required|email|unique:users',
+                ]);
+
+                $data['email'] = $req->input('email');
+
+            }
+
+            // in case of changed password
+            if(isset($password) || trim($password) !== '') {
+
+                $validated = $req->validate([
+                    'password' => 'required|confirmed',
+                ]);
+
+                $data['password'] = Hash::make($req->input('password'));
+
+            }
+
+            $validated = $req->validate([
+                'name'=>'required|string',
+                'last_name'=>'required|string',
+            ]);
+
+            $data['name'] = $req->input('name');
+            $data['last_name'] = $req->input('last_name');
+            $data['updated_at'] = $date;
+
+            DB::table('users')->where('id',$id)->update($data);
+
+            return redirect('user/userprofile');
+
+        }
+
+        $user = DB::table('users')
+            ->select(DB::raw('name, last_name, email'))
+            ->where('id', '=', $id)
+            ->get();
+
+        return view('dashboards.users.userprofile',['user' => $user[0]]);
+
+    }
+
     function applyvacation(Request $req){
 
         if($req->method() == 'POST'){

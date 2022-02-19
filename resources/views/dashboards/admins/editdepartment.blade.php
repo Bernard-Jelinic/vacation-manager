@@ -5,16 +5,6 @@
     <div class="container-fluid col-lg-5">
         <form method="post" enctype="multipart/form-data"><br>
 
-            <span style="font-size:12px;color:red;">
-                @if ($errors->all())
-                    <div class="alert alert-danger text-center">
-                        @foreach ($errors->all() as $error)
-                            {{$error}}<br>
-                        @endforeach
-                    </div>
-                @endif
-            </span>
-
             <h3>Edit Department</h3><br>
 
             @if ($department)
@@ -22,33 +12,33 @@
 
                     <div class="form-group">
                         <label>Department Name</label>
-                        <input value="{{$key->name}}" id="name" type="text" class="form-control" placeholder="Department Name" name="name" required autofocus>
+                        <input class="form-control @error('name') error-border @enderror" value="{{$key->name}}" id="name" type="text" placeholder="Department Name" name="name">
+                        @error('name')
+                            <div class="error-text">
+                                {{ $message }}
+                            </div>
+                        @enderror
                     </div>
 
                 @endforeach
             @endif
 
-            {{-- <div class="form-group">
-                <label>Department Manager</label>
+            <div class="form-group">
+                <label>Departments Manager</label>
 
-                <select id="manager_id" name="manager_id" class="form-control" required>
+                <select id="manager_id" name="manager_id" class="form-control">
+                    <option>Select departments manager</option>
 
-                    <?php if(is_array($managers)): ?>
-                        <?php foreach($managers as $manager): ?>
-                            @foreach ($department as $key)
-
-                                @if ($key->manager_id == $manager->id)
-                                    <option value="<?=$manager->id?>" selected>{{$manager->name . ' ' . $manager->last_name}}</option>
-                                @else
-                                    <option value="<?=$manager->id?>">{{$manager->name . ' ' . $manager->last_name}}</option>
-                                @endif
-                            @endforeach
-                            
-                        <?php endforeach; ?>
-                    <?php endif; ?>
+                    @foreach ($managers as $manager)
+                        @if ($manager->department_id == $department_id)
+                            <option value="<?=$manager->id?>" selected>{{$manager->name . ' ' . $manager->last_name}}</option>
+                        @else
+                            <option value="<?=$manager->id?>">{{$manager->name . ' ' . $manager->last_name}}</option>
+                        @endif
+                    @endforeach
 
                 </select>
-            </div> --}}
+            </div>
 
             @csrf
             <input class="btn btn-primary" type="submit" value="Change">

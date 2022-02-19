@@ -60,6 +60,13 @@
                             <span>Home</span>
                         </a>
                     </li>
+
+                    <li class="sub-menu">
+                        <a href="{{ route('manager.userprofile') }}">
+                            <i class="fa fa-user"></i>
+                            <span>User profile</span>
+                        </a>
+                    </li>
                     
                     <li class="sub-menu">
                         <a href="javascript:;" >
@@ -98,6 +105,8 @@
             <section class="wrapper">
 
                 @yield('dashboard')
+                
+                @yield('userprofile')
 
                 @yield('editvacation')
                 @yield('allvacations')

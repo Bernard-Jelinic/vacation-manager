@@ -40,35 +40,118 @@ class AdminController extends Controller
 
     }
 
+    function userprofile(Request $req){
+
+        $id = Auth::user()->id;
+
+        if($req->method() == 'POST'){
+
+            $email = $req->input('email');
+            $password = $req->input('password');
+
+            $date = date("Y-m-d H:i:s");
+
+            $user_email = DB::table('users')
+                    ->select('email')
+                    ->where('id', $id)
+                    ->get();
+
+            // in case of changed email
+            if($user_email[0]->email !== $email){
+                
+                $validated = $req->validate([
+                    'email'=>'required|email|unique:users',
+                ]);
+
+                $data['email'] = $req->input('email');
+
+            }
+
+            // in case of changed password
+            if(isset($password) || trim($password) !== '') {
+
+                $validated = $req->validate([
+                    'password' => 'required|confirmed',
+                ]);
+
+                $data['password'] = Hash::make($req->input('password'));
+
+            }
+
+            $validated = $req->validate([
+                'name'=>'required|string',
+                'last_name'=>'required|string',
+            ]);
+
+            $data['name'] = $req->input('name');
+            $data['last_name'] = $req->input('last_name');
+            $data['updated_at'] = $date;
+
+            DB::table('users')->where('id',$id)->update($data);
+
+            return redirect('admin/userprofile');
+
+        }
+
+        $user = DB::table('users')
+            ->select(DB::raw('name, last_name, email'))
+            ->where('id', '=', $id)
+            ->get();
+
+        return view('dashboards.admins.userprofile',['user' => $user[0]]);
+
+    }
+
     function adddepartment(Request $req, $type = '',$id = ''){
 
         if($req->method() == 'POST'){
 
             $validated = $req->validate([
-                'name' => 'required|string',
+                'name' => 'required|string'
             ]);
 
             $data['name'] = $req->input('name');
 
             DB::table('departments')->insert($data);
 
+            // admin doesn't need to select manager
+            if ($req->input('user_id')!= 'Select departments manager') {
+
+                $user_id = $req->input('user_id');
+
+                $department_id = DB::table('departments')
+                        ->latest('id')
+                        ->first();
+
+                DB::table('users')->where('id', $user_id)->update(['department_id' => $department_id->id]);
+
+            }
+
             return redirect('admin/managedepartments');
 
         }
 
-        return view('dashboards.admins.adddepartment');
+        $managers = DB::table('users')
+            ->select(DB::raw('id, name, last_name'))
+            ->where('role', '=', 'manager')
+            ->get();
+
+        return view('dashboards.admins.adddepartment', ['managers'=>$managers]);
 
     }
 
     function managedepartments(){
 
         $departments = DB::table('departments')
-            ->select(DB::raw('departments.id AS department_id, departments.name AS department_name,users.name AS user_name, users.last_name'))
-            ->join('users', 'departments.id', '=', 'users.department_id')
-            ->where('role', '=', 'manager')
-            ->get();
+                ->select(DB::raw('id, name'))
+                ->get();
 
-        return view('dashboards.admins.managedepartments', ['departments' => $departments]);
+        $managers = DB::table('users')
+                ->select(DB::raw('id, name, last_name, department_id'))
+                ->where('role', '=', 'manager')
+                ->get();
+
+        return view('dashboards.admins.managedepartments', ['departments' => $departments, 'managers' => $managers]);
 
     }
 
@@ -76,44 +159,43 @@ class AdminController extends Controller
 
         $id = $req->route()->id;
 
-        // dd($id);
-
         if($req->method() == 'POST'){
 
             $validated = $req->validate([
                 'name' => 'required|string',
-                //'manager_id' => 'required|string',
             ]);
 
             $data['name'] = $req->input('name');
-            //$data['manager_id'] = $req->input('manager_id');
             $data['updated_at'] = date("Y-m-d H:i:s");
 
             DB::table('departments')
                 ->where('id',$id)
                 ->update($data);
 
+            // admin doesn't need to select manager
+            if ($req->input('manager_id') != 'Select departments manager') {
+
+                $manager_id = $req->input('manager_id');
+
+                DB::table('users')->where('id', $manager_id)->update(['department_id' => $id]);
+
+            }
+
             return redirect('admin/managedepartments');
 
         }
-
-        // $query = "SELECT departments.*,users.name AS user_name, users.last_name AS user_last_name, users.role AS user_role FROM departments JOIN users ON departments.id = users.department_id WHERE departments.id ={$id}";
-
-        // $department = DB::select($query);
 
         $department = DB::table('departments')
                 ->select('name')
                 ->where('id', '=', $id)
                 ->get();
 
-        //dd($department);
+        $managers = DB::table('users')
+                ->select(DB::raw('id, name, last_name, department_id'))
+                ->where('role', '=', 'manager')
+                ->get();
 
-        // $query_managers = "SELECT id, name, last_name FROM users WHERE role='manager'";
-
-        // $managers = DB::select($query_managers);
-
-        // return view('dashboards.admins.editdepartment', ['department' => $department, 'managers' => $managers]);
-        return view('dashboards.admins.editdepartment', ['department' => $department]);
+        return view('dashboards.admins.editdepartment', ['department' => $department, 'managers' => $managers, 'department_id' => $id]);
 
     }
 

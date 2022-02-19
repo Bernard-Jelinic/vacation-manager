@@ -49,6 +49,9 @@ Route::group(['prefix'=>'admin', 'middleware'=>['isAdmin','auth','PreventBackHis
     Route::get('',[AdminController::class,'index'])->name('admin.dashboard');
     Route::get('fetchnotification',[AdminController::class,'fetchnotification']);
 
+    Route::get('userprofile',[AdminController::class,'userprofile'])->name('admin.userprofile');
+    Route::post('userprofile',[AdminController::class,'userprofile'])->name('admin.userprofile');
+
     Route::get('adddepartment',[AdminController::class,'adddepartment'])->name('adddepartment');
     Route::post('adddepartment',[AdminController::class,'adddepartment'])->name('adddepartment');
     Route::get('managedepartments',[AdminController::class,'managedepartments'])->name('managedepartments');
@@ -77,6 +80,9 @@ Route::group(['prefix'=>'manager', 'middleware'=>['isManager','auth','PreventBac
     Route::get('dashboard',[ManagerController::class,'index'])->name('manager.dashboard');
     Route::get('fetchnotification',[ManagerController::class,'fetchnotification']);
 
+    Route::get('userprofile',[ManagerController::class,'userprofile'])->name('manager.userprofile');
+    Route::post('userprofile',[ManagerController::class,'userprofile'])->name('manager.userprofile');
+
     Route::get('allvacations',[ManagerController::class,'allvacations'])->name('manager.allvacations');
     Route::get('editvacation/{id}',[ManagerController::class,'editvacation']);
     Route::post('editvacation/{id}',[ManagerController::class,'editvacation']);
@@ -90,6 +96,9 @@ Route::group(['prefix'=>'user', 'middleware'=>['isUser','auth','PreventBackHisto
 
     Route::get('dashboard',[UserController::class,'index'])->name('user.dashboard');
     Route::get('fetchnotification',[UserController::class,'fetchnotification']);
+
+    Route::get('userprofile',[UserController::class,'userprofile'])->name('user.userprofile');
+    Route::post('userprofile',[UserController::class,'userprofile'])->name('user.userprofile');
 
     Route::get('applyvacation',[UserController::class,'applyvacation'])->name('applyvacation');
     Route::post('applyvacation',[UserController::class,'applyvacation'])->name('applyvacation');
