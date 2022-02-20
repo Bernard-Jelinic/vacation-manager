@@ -45,7 +45,6 @@
                 @enderror
             </div>
             
-            {{-- <div id="show" class="form-group" hidden> --}}
             <div class="form-group">
                 <label>Department *</label>
                 <select class="form-control @error('department_id') error-border @enderror" id="department_id" name="department_id" required>

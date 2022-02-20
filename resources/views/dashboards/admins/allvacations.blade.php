@@ -42,7 +42,7 @@
 
                         </td>
                         <td>
-                            <a href="{{url('admin/editvacation/'.$vacation_data->id)}}">
+                            <a href="{{ route('admin.editvacation', [$vacation_data->id]) }}">
                                 <button class="btn-sm btn btn-success"><i class="fa fa-edit"></i> Edit</button>
                             </a>
                         </td>

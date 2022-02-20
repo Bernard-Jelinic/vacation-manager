@@ -5,16 +5,6 @@
     <div class="container-fluid col-lg-5">
         <form method="post" enctype="multipart/form-data"><br>
 
-            <span style="font-size:12px;color:red;">
-                @if ($errors->all())
-                    <div class="alert alert-danger text-center">
-                        @foreach ($errors->all() as $error)
-                            {{$error}}<br>
-                        @endforeach
-                    </div>
-                @endif
-            </span>
-
             <h3>Edit Vacation</h3><br>
 
             @if ($vacation_data)

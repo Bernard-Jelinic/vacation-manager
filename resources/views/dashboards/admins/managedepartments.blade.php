@@ -18,19 +18,15 @@
 
                     @foreach ($departments as $department)
 
-                        <?php $managers_full_name = "Department doesn't have manager" ?>
-
-                        @foreach($managers as $manager)
-                            @if ($department->id == $manager->department_id)
-                                <?php $managers_full_name = $manager->name . ' ' . $manager->last_name ?>
-                            @endif
-                        @endforeach
-                            <tr><td>{{$department->name}}</td><td>{{$managers_full_name}}</td>
+                        <tr><td>{{$department->department_name}}</td><td>{{$department->manager_name}}</td>
+                        {{-- <tr><td>{{$department['department_name']}}</td><td>{{$department['manager_name']}}</td> --}}
                             <td>
-                                <a href="{{url('admin/managedepartments/edit/'.$department->id)}}">
+                                <a href="{{ route('editdepartment', [$department->id]) }}">
+                                    {{-- <a href="{{ route('editdepartment', [$department['id']]) }}"> --}}
                                     <button class="btn-sm btn btn-success"><i class="fa fa-edit"></i> Edit</button>
                                 </a>
-                                <form action="{{url('admin/managedepartments/delete/'.$department->id)}}" method="post">
+                                <form action="{{ route('deletedepartment', [$department->id]) }}" method="post">
+                                {{-- <form action="{{ route('deletedepartment', [$department['id']]) }}" method="post"> --}}
                                     @csrf
                                     <button type="submit" class="btn-sm btn btn-warning"><i class="fa fa-times"></i> Delete</button>
                                 </form>

@@ -7,14 +7,12 @@
         $(document).ready(function(){
 
             if ($("#role option:selected").val() == 'admin') {
-                // console.log($("#role option:selected").val());
                 $("#show").hide();
             }
 
             $("#role").change(function() {
 
                 if (this.value == 'admin') {
-                    // console.log($("#role option:selected").val());
                      $("#show").hide();
                 }else{
                     $("#show").show();
@@ -28,16 +26,6 @@
     <div class="container-fluid col-lg-5">
         <form method="post" enctype="multipart/form-data"><br>
 
-            <span style="font-size:12px;color:red;">
-                @if ($errors->all())
-                    <div class="alert alert-danger text-center">
-                        @foreach ($errors->all() as $error)
-                            {{$error}}<br>
-                        @endforeach
-                    </div>
-                @endif
-            </span>
-
             <h3>Edit Employee</h3><br>
 
             @if ($employee)
@@ -45,12 +33,22 @@
 
                     <div class="form-group">
                         <label>Employee name</label>
-                        <input value="{{$key->name}}" id="name" type="text" class="form-control" placeholder="Employee name" name="name" required autofocus>
+                        <input value="{{$key->name}}" id="name" type="text" class="form-control @error('name') error-border @enderror" placeholder="Employee name" name="name" autofocus>
+                        @error('name')
+                            <div class="error-text">
+                                {{ $message }}
+                            </div>
+                        @enderror
                     </div>
 
                     <div class="form-group">
                         <label>Employee last name</label>
-                        <input value="{{$key->last_name}}" id="last_name" type="text" class="form-control" placeholder="Employee last name" name="last_name" required autofocus>
+                        <input value="{{$key->last_name}}" id="last_name" type="text" class="form-control @error('last_name') error-border @enderror" placeholder="Employee last name" name="last_name" required autofocus>
+                    @error('last_name')
+                        <div class="error-text">
+                            {{ $message }}
+                        </div>
+                    @enderror
                     </div>
 
                 @endforeach
@@ -59,7 +57,7 @@
             <div class="form-group">
                 <label>Employees Role</label>
                 
-                <select class="form-control" id="role" name="role" required>
+                <select class="form-control @error('role') error-border @enderror" id="role" name="role">
 
                     @foreach ($employee as $key)
                             <option value="admin" {{$key->role == 'admin' ? 'selected':''}}>Admin</option>
@@ -68,12 +66,18 @@
                     @endforeach
 
                 </select>
+                @error('role')
+                    <div class="error-text">
+                        {{-- {{ $message }} --}}
+                        {{ 'The role must be selected.' }}
+                    </div>
+                @enderror
             </div>
 
             <div id="show" class="form-group">
                 <label>Employees Department * </label>
 
-                <select class="form-control" id="department_id" name="department_id" required>
+                <select class="form-control @error('department_id') error-border @enderror" id="department_id" name="department_id">
                     <option>Select department</option>
                     @foreach ($employee as $key)
                         @foreach ($departments as $department)
@@ -82,16 +86,32 @@
                     @endforeach
 
                 </select>
+                @error('department_id')
+                    <div class="error-text">
+                        {{ $message }}
+                        {{-- {{ 'The department must be selected.' }} --}}
+                    </div>
+                @enderror
             </div>
 
             <div class="form-group">
                 <label>Email address</label>
-                <input class="form-control" type="text" placeholder="Enter email" name="email" value="{{$key->email}}"/>
+                <input class="form-control @error('email') error-border @enderror" type="text" placeholder="Enter email" name="email" value="{{$key->email}}"/>
+                @error('email')
+                    <div class="error-text">
+                        {{ $message }}
+                    </div>
+                @enderror
             </div>
 
             <div class="form-group">
                 <label>Password</label>
-                <input class="form-control" type="password" placeholder="Password" name="password" value="{{old('password')}}"/>
+                <input class="form-control @error('password') error-border @enderror" type="password" placeholder="Password" name="password" value="{{old('password')}}"/>
+                @error('password')
+                    <div class="error-text">
+                        {{ $message }}
+                    </div>
+                @enderror
             </div>
 
             <div class="form-group">

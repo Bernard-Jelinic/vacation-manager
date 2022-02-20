@@ -55,20 +55,20 @@ Route::group(['prefix'=>'admin', 'middleware'=>['isAdmin','auth','PreventBackHis
     Route::get('adddepartment',[AdminController::class,'adddepartment'])->name('adddepartment');
     Route::post('adddepartment',[AdminController::class,'adddepartment'])->name('adddepartment');
     Route::get('managedepartments',[AdminController::class,'managedepartments'])->name('managedepartments');
-    Route::get('managedepartments/edit/{id}',[AdminController::class,'editdepartment']);
-    Route::post('managedepartments/edit/{id}',[AdminController::class,'editdepartment']);
-    Route::post('managedepartments/delete/{id}',[AdminController::class,'deletedepartment']);
+    Route::get('managedepartments/edit/{id}',[AdminController::class,'editdepartment'])->name('editdepartment');
+    Route::post('managedepartments/edit/{id}',[AdminController::class,'editdepartment'])->name('editdepartment');
+    Route::post('managedepartments/delete/{id}',[AdminController::class,'deletedepartment'])->name('deletedepartment');
 
     Route::get('addemployee',[AdminController::class,'addemployee'])->name('addemployee');
     Route::post('addemployee',[AdminController::class,'addemployee'])->name('addemployee');
     Route::get('manageemployee',[AdminController::class,'manageemployee'])->name('manageemployee');
-    Route::get('manageemployee/edit/{id}',[AdminController::class,'editemployee']);
-    Route::post('manageemployee/edit/{id}',[AdminController::class,'editemployee']);
-    Route::post('manageemployee/delete/{id}',[AdminController::class,'deleteemployee']);
+    Route::get('manageemployee/edit/{id}',[AdminController::class,'editemployee'])->name('editemployee');
+    Route::post('manageemployee/edit/{id}',[AdminController::class,'editemployee'])->name('editemployee');
+    Route::post('manageemployee/delete/{id}',[AdminController::class,'deleteemployee'])->name('deleteemployee');
 
     Route::get('allvacations',[AdminController::class,'allvacations'])->name('admin.allvacations');
-    Route::get('editvacation/{id}',[AdminController::class,'editvacation']);
-    Route::post('editvacation/{id}',[AdminController::class,'editvacation']);
+    Route::get('editvacation/{id}',[AdminController::class,'editvacation'])->name('admin.editvacation');
+    Route::post('editvacation/{id}',[AdminController::class,'editvacation'])->name('admin.editvacation');
     Route::get('pendingvacations',[AdminController::class,'pendingvacations'])->name('admin.pendingvacations');
     Route::get('approvedvacations',[AdminController::class,'approvedvacations'])->name('admin.approvedvacations');
     Route::get('notapprovedvacations',[AdminController::class,'notapprovedvacations'])->name('admin.notapprovedvacations');

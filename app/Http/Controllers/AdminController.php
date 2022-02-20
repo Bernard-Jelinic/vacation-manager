@@ -29,7 +29,6 @@ class AdminController extends Controller
         return response()->json([
             'notifications'=>$notifications,
             'count'=>$counter
-
         ]);
 
     }
@@ -151,7 +150,35 @@ class AdminController extends Controller
                 ->where('role', '=', 'manager')
                 ->get();
 
-        return view('dashboards.admins.managedepartments', ['departments' => $departments, 'managers' => $managers]);
+        $depart_manag = array();
+
+        foreach ($departments as $department) {
+
+            // to use array just comment first two line down
+            $data = array();
+            $data = (object) $data;
+
+            $data->id = $department->id;
+            // $data['id'] = $department->id;
+            $data->department_name = $department->name;
+            // $data['department_name'] = $department->name;
+
+            $managers_full_name = "Department doesn't have manager";
+
+            foreach ($managers as $manager) {
+
+                if ($department->id == $manager->department_id) {
+                    $managers_full_name = $manager->name . ' ' . $manager->last_name;
+                }
+
+                $data->manager_name = $managers_full_name;
+                // $data['manager_name'] = $managers_full_name;
+            }
+
+            $depart_manag[] = $data;
+        }
+
+        return view('dashboards.admins.managedepartments', ['departments' => $depart_manag]);
 
     }
 
@@ -363,8 +390,10 @@ class AdminController extends Controller
         DB::table('vacations')
             ->update($data);
 
-        $query = "SELECT vacations.id, vacations.depart, vacations.return, vacations.created_at, vacations.status, vacations.user_id, users.name, users.last_name FROM vacations JOIN users ON vacations.user_id = users.id";
-        $vacation_datas = DB::select($query);
+        $vacation_datas = DB::table('vacations')
+                    ->select(DB::raw(' vacations.id, vacations.depart, vacations.return, vacations.created_at, vacations.status, vacations.user_id, users.name, users.last_name'))
+                    ->join('users', 'vacations.user_id', '=', 'users.id')
+                    ->get();
 
         // converting to better readible format for people
         foreach ($vacation_datas as $value) {
@@ -386,8 +415,11 @@ class AdminController extends Controller
             ->where('status', '=',0)
             ->update($data);
 
-        $query = "SELECT vacations.id, vacations.depart, vacations.return, vacations.created_at, vacations.status, vacations.user_id, users.name, users.last_name FROM vacations JOIN users ON vacations.user_id = users.id WHERE vacations.status = 0";
-        $vacation_datas = DB::select($query);
+        $vacation_datas = DB::table('vacations')
+            ->select(DB::raw(' vacations.id, vacations.depart, vacations.return, vacations.created_at, vacations.status, vacations.user_id, users.name, users.last_name'))
+            ->where('vacations.status', '=', 0)
+            ->join('users', 'vacations.user_id', '=', 'users.id')
+            ->get();
 
         // converting to better readible format for people
         foreach ($vacation_datas as $value) {
@@ -409,8 +441,11 @@ class AdminController extends Controller
             ->where('status', '=',1)
             ->update($data);
 
-        $query = "SELECT vacations.id, vacations.depart, vacations.return, vacations.created_at, vacations.status, vacations.user_id, users.name, users.last_name FROM vacations JOIN users ON vacations.user_id = users.id WHERE vacations.status = 1";
-        $vacation_datas = DB::select($query);
+        $vacation_datas = DB::table('vacations')
+            ->select(DB::raw(' vacations.id, vacations.depart, vacations.return, vacations.created_at, vacations.status, vacations.user_id, users.name, users.last_name'))
+            ->where('vacations.status', '=', 1)
+            ->join('users', 'vacations.user_id', '=', 'users.id')
+            ->get();
 
         // converting to better readible format for people
         foreach ($vacation_datas as $value) {
@@ -432,8 +467,11 @@ class AdminController extends Controller
             ->where('status', '=',2)
             ->update($data);
 
-        $query = "SELECT vacations.id, vacations.depart, vacations.return, vacations.created_at, vacations.status, vacations.user_id, users.name, users.last_name FROM vacations JOIN users ON vacations.user_id = users.id WHERE vacations.status = 2";
-        $vacation_datas = DB::select($query);
+        $vacation_datas = DB::table('vacations')
+            ->select(DB::raw(' vacations.id, vacations.depart, vacations.return, vacations.created_at, vacations.status, vacations.user_id, users.name, users.last_name'))
+            ->where('vacations.status', '=', 2)
+            ->join('users', 'vacations.user_id', '=', 'users.id')
+            ->get();
 
         // converting to better readible format for people
         foreach ($vacation_datas as $value) {
@@ -475,9 +513,11 @@ class AdminController extends Controller
 
         }
 
-        $query = "SELECT vacations.id, vacations.depart, vacations.return, vacations.created_at, vacations.status, vacations.user_id, users.name, users.last_name FROM vacations JOIN users ON vacations.user_id = users.id WHERE vacations.id = {$id}";
-
-        $vacation_data = DB::select($query);
+        $vacation_data = DB::table('vacations')
+                    ->select(DB::raw('vacations.id, vacations.depart, vacations.return, vacations.created_at, vacations.status, vacations.user_id, users.name, users.last_name'))
+                    ->join('users', 'vacations.user_id', '=', 'users.id')
+                    ->where('vacations.id', '=', $id)
+                    ->get();
 
         // converting to better readible format for people
         foreach ($vacation_data as $value) {

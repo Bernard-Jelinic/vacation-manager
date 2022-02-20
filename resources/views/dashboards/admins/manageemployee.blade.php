@@ -20,10 +20,10 @@
                         <tr><td>{{$employee->name . ' ' . $employee->last_name}}</td><td>{{$employee->role}}</td><td>{{$employee->department_name}}</td><td>{{$employee->email}}</td>
                             <td>
                         
-                                <a href="{{url('admin/manageemployee/edit/'.$employee->id)}}">
+                                <a href="{{ route('editemployee', [$employee->id]) }}">
                                     <button class="btn-sm btn btn-success"><i class="fa fa-edit"></i> Edit</button>
                                 </a>
-                                <form action="{{url('admin/manageemployee/delete/'.$employee->id)}}" method="post">
+                                <form action="{{ route('deleteemployee', [$employee->id]) }}" method="post">
                                     @csrf
                                     <button type="submit" class="btn-sm btn btn-warning"><i class="fa fa-times"></i> Delete</button>
                                 </form>
