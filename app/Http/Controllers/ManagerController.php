@@ -14,11 +14,10 @@ class ManagerController extends Controller
         $manager_id = Auth::user()->id;
 
         $notifications = DB::table('vacations')
-            ->select(DB::raw('vacations.id, vacations.created_at, vacations.user_notified, vacations.status, users.name, users.last_name, departments.manager_id AS manager_id'))
+            ->select(DB::raw('vacations.id, vacations.created_at, users.name, users.last_name'))
+            ->where('status', '=', 0)
             ->where('manager_read', '=', 0)
-            ->where('manager_id', '=', $manager_id)
             ->join('users', 'vacations.user_id', '=', 'users.id')
-            ->join('departments', 'users.department_id', '=', 'departments.id')
             ->get();
 
         // converting to better readible format for people
@@ -106,19 +105,19 @@ class ManagerController extends Controller
     function allvacations(Request $req){
 
         $manager_id = Auth::user()->id;
-        // dd($manager_id);
 
-        // $department_id= DB::table('users')
-        //     ->where('id', '=', $manager_id)
-            // ->where('vacations.status', '=', 2)
-            // ->update($data);
+        $department_id = DB::table('users')
+                    ->select(DB::raw('department_id'))
+                    ->where('id', '=', $manager_id)
+                    ->get();
+
+        $department_id = $department_id[0]->department_id;
 
         $vacation_datas = DB::table('vacations')
-            // ->select(DB::raw('vacations.id, vacations.depart, vacations.return, vacations.created_at, vacations.user_notified, vacations.status, users.name, users.last_name, departments.manager_id AS manager_id'))
             ->select(DB::raw('vacations.id, vacations.depart, vacations.return, vacations.created_at, vacations.user_notified, vacations.status, users.name, users.last_name'))
-            ->where('department_id', '=', $manager_id)
+            ->where('department_id', '=', $department_id)
+            ->where('role', '=', 'user')
             ->join('users', 'vacations.user_id', '=', 'users.id')
-            // ->join('departments', 'users.department_id', '=', 'departments.id')
             ->get();
 
         $manager_ids = array();
@@ -140,7 +139,7 @@ class ManagerController extends Controller
                 ->update($data);
         }
 
-        // variable display is because I can only have one view
+        // variable display is so I can only have one view
         return view('dashboards.managers.allvacations', ['vacation_datas' => $vacation_datas, 'display' => 'all']);
 
     }
@@ -149,12 +148,19 @@ class ManagerController extends Controller
 
         $manager_id = Auth::user()->id;
 
+        $department_id = DB::table('users')
+                    ->select(DB::raw('department_id'))
+                    ->where('id', '=', $manager_id)
+                    ->get();
+
+        $department_id = $department_id[0]->department_id;
+
         $vacation_datas = DB::table('vacations')
-            ->select(DB::raw('vacations.id, vacations.depart, vacations.return, vacations.created_at, vacations.user_notified, vacations.status, users.name, users.last_name, departments.manager_id AS manager_id'))
+            ->select(DB::raw('vacations.id, vacations.depart, vacations.return, vacations.created_at, vacations.user_notified, vacations.status, users.name, users.last_name'))
+            ->where('department_id', '=', $department_id)
+            ->where('role', '=', 'user')
             ->where('vacations.status', '=', 0)
-            ->where('manager_id', '=', $manager_id)
             ->join('users', 'vacations.user_id', '=', 'users.id')
-            ->join('departments', 'users.department_id', '=', 'departments.id')
             ->get();
 
         $manager_ids = array();
@@ -184,14 +190,21 @@ class ManagerController extends Controller
 
     function approvedvacations(){
 
-         $manager_id = Auth::user()->id;
+        $manager_id = Auth::user()->id;
+
+        $department_id = DB::table('users')
+                    ->select(DB::raw('department_id'))
+                    ->where('id', '=', $manager_id)
+                    ->get();
+
+        $department_id = $department_id[0]->department_id;
 
         $vacation_datas = DB::table('vacations')
-            ->select(DB::raw('vacations.id, vacations.depart, vacations.return, vacations.created_at, vacations.user_notified, vacations.status, users.name, users.last_name, departments.manager_id AS manager_id'))
+            ->select(DB::raw('vacations.id, vacations.depart, vacations.return, vacations.created_at, vacations.user_notified, vacations.status, users.name, users.last_name'))
+            ->where('department_id', '=', $department_id)
+            ->where('role', '=', 'user')
             ->where('vacations.status', '=', 1)
-            ->where('manager_id', '=', $manager_id)
             ->join('users', 'vacations.user_id', '=', 'users.id')
-            ->join('departments', 'users.department_id', '=', 'departments.id')
             ->get();
 
         $manager_ids = array();
@@ -221,14 +234,21 @@ class ManagerController extends Controller
 
     function notapprovedvacations(){
 
-         $manager_id = Auth::user()->id;
+        $manager_id = Auth::user()->id;
+
+        $department_id = DB::table('users')
+                    ->select(DB::raw('department_id'))
+                    ->where('id', '=', $manager_id)
+                    ->get();
+
+        $department_id = $department_id[0]->department_id;
 
         $vacation_datas = DB::table('vacations')
-            ->select(DB::raw('vacations.id, vacations.depart, vacations.return, vacations.created_at, vacations.user_notified, vacations.status, users.name, users.last_name, departments.manager_id AS manager_id'))
+            ->select(DB::raw('vacations.id, vacations.depart, vacations.return, vacations.created_at, vacations.user_notified, vacations.status, users.name, users.last_name'))
+            ->where('department_id', '=', $department_id)
+            ->where('role', '=', 'user')
             ->where('vacations.status', '=', 2)
-            ->where('manager_id', '=', $manager_id)
             ->join('users', 'vacations.user_id', '=', 'users.id')
-            ->join('departments', 'users.department_id', '=', 'departments.id')
             ->get();
 
         $manager_ids = array();
@@ -274,6 +294,7 @@ class ManagerController extends Controller
 
             $data['updated_at'] = date("Y-m-d H:i:s");
             $data['status'] = $req->input('status');
+            $data['user_notified'] = 0;
 
             DB::table('vacations')
                 ->where('id',$id)
@@ -283,9 +304,11 @@ class ManagerController extends Controller
 
         }
 
-        $query = "SELECT vacations.id, vacations.depart, vacations.return, vacations.created_at, vacations.status, vacations.user_id, users.name, users.last_name FROM vacations JOIN users ON vacations.user_id = users.id WHERE vacations.id = {$id}";
-
-        $vacation_data = DB::select($query);
+        $vacation_data = DB::table('vacations')
+            ->select(DB::raw('vacations.id, vacations.depart, vacations.return, vacations.created_at, vacations.status, vacations.user_id, users.name, users.last_name'))
+            ->join('users', 'vacations.user_id', '=', 'users.id')
+            ->where('vacations.id', '=', $id)
+            ->get();
 
         // converting to better readible format for people
         foreach ($vacation_data as $value) {

@@ -133,7 +133,7 @@ class UserController extends Controller
 
             DB::table('vacations')->insert($data);
 
-            return redirect('user/historyvacations');
+            return redirect('user/');
             
         }
 
@@ -151,9 +151,11 @@ class UserController extends Controller
         DB::table('vacations')
             ->where('user_id',$user_id)
             ->update($data);
-        
-        $query = "SELECT `id`, `depart`, `return`, `created_at`, `status` FROM `vacations` WHERE user_id={$user_id}";
-        $vacation_datas = DB::select($query);
+
+        $vacation_datas = DB::table('vacations')
+                    ->select(DB::raw('vacations.id, vacations.depart, vacations.return, vacations.created_at, vacations.status'))
+                    ->where('user_id', '=', $user_id)
+                    ->get();
 
         // converting to better format for people
         foreach ($vacation_datas as $value) {
