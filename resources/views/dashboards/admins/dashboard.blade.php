@@ -23,13 +23,9 @@
                                 notificationWindow += `
                                     <a href="editvacation/${element.id}">
                                         <div class="desc">
-                                            <div class="thumb">
-                                                <span class="badge bg-theme"><i class="fa fa-clock-o"></i></span>
-                                            </div>
-                                
                                             <div class="details">
-                                                <p><muted>${element.created_at}</muted></p>
-                                                <p style="font-size:12px;color:black;">${element.name +' '+ element.last_name} sent a request</p>
+                                                <p style="font-size:12px;color:black;">${element.name} ${element.last_name} send request</p>
+                                                <p style="font-size:12px;color:black;">created ${element.created_at}</p>
                                             </div>
                                         </div>
                                     </a>

@@ -145,10 +145,10 @@
                                 <li>
                                     <a href="historyvacations">
                                         <span class="subject">
-                                        <span class="from">${element.name} ${element.last_name} send request</span>
+                                        <span class="from">The request created on ${element.created_at}</span>
                                         </span>
                                         <span class="subject">
-                                        <span class="from">created ${element.created_at}</span>
+                                        <span class="from">changed its status</span>
                                         </span>
                                     </a>
                                 </li>

@@ -180,8 +180,10 @@
                                 <li>
                                     <a href="editvacation/${element.id}">
                                         <span class="subject">
-                                        <span class="from">${element.name +' '+ element.last_name}</span>
-                                        <span class="time">${element.created_at}</span>
+                                        <span class="from">${element.name} ${element.last_name} send request</span>
+                                        </span>
+                                        <span class="subject">
+                                        <span class="from">created ${element.created_at}</span>
                                         </span>
                                     </a>
                                 </li>

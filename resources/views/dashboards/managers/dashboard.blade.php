@@ -20,10 +20,11 @@
                             response.notifications.forEach(element => {
 
                                 notificationWindow += `
-                                    <a href="historyvacations">
+                                    <a href="editvacation/${element.id}">
                                         <div class="desc">
                                             <div class="details">
-                                                <p style="font-size:12px;color:black;">Request created ${element.created_at}</p>
+                                                <p style="font-size:12px;color:black;">${element.name} ${element.last_name} send request</p>
+                                                <p style="font-size:12px;color:black;">created ${element.created_at}</p>
                                             </div>
                                         </div>
                                     </a>
