@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use App\Models\Department;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -240,7 +242,7 @@ class AdminController extends Controller
 
     }
 
-    function addemployee(Request $req){
+    function addemployee(Department $department, Request $req){
 
         if($req->method() == 'POST'){
 
@@ -255,7 +257,7 @@ class AdminController extends Controller
 
             $date = date("Y-m-d H:i:s");
 
-            $data = [
+            User::create([
                 'name' => $req->input('name'),
                 'last_name' => $req->input('last_name'),
                 'role' => $req->input('role'),
@@ -264,36 +266,36 @@ class AdminController extends Controller
                 'password' => Hash::make($req->input('password')),
                 'created_at' => $date,
                 'updated_at' => $date
-            ];
-
-            DB::table('users')->insert($data);
+            ]);
 
             return redirect('admin/manageemployee');
 
         }
 
         // it needs to display departments
-        $departments = DB::table('departments')
-                    ->select('id', 'name')
-                    ->orderBy('id', 'DESC')
-                    ->get();
+        $departments = $department->getDepartment();
 
         return view('dashboards.admins.addemployee', ['departments' => $departments]);
 
     }
 
-    function manageemployee(){
+    function manageemployee(User $user){
 
         $employees = DB::table('departments')
             ->select(DB::raw('departments.id AS department_id, departments.name AS department_name, users.id, users.name, users.last_name, users.role, users.email'))
             ->join('users', 'departments.id', '=', 'users.department_id')
             ->get();
 
+        //dd($user->manageemployee());
+        $employees = $user::find(2)->manageemployee();
+
+        dd($employees);
+
         return view('dashboards.admins.manageemployee', ['employees' => $employees]);
 
     }
 
-    function editemployee(Request $req){
+    function editemployee(Department $department, Request $req){
 
         $id = $req->route()->id;
         
@@ -356,10 +358,8 @@ class AdminController extends Controller
             ->join('users', 'departments.id', '=', 'users.department_id')
             ->get();
 
-        $departments = DB::table('departments')
-            ->select('id', 'name')
-            ->orderBy('id', 'DESC')
-            ->get();
+        // it needs to display departments
+        $departments = $department->getDepartment();
 
         return view('dashboards.admins.editemployee', ['employee' => $employee,'departments' => $departments]);
 
