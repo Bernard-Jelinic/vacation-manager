@@ -41,32 +41,13 @@ class AdminController extends Controller
 
     }
 
-    function userprofile(Request $req){
+    function userprofile(User $user,Request $req){
 
         $id = Auth::user()->id;
 
         if($req->method() == 'POST'){
 
-            $email = $req->input('email');
             $password = $req->input('password');
-
-            $date = date("Y-m-d H:i:s");
-
-            $user_email = DB::table('users')
-                    ->select('email')
-                    ->where('id', $id)
-                    ->get();
-
-            // in case of changed email
-            if($user_email[0]->email !== $email){
-                
-                $validated = $req->validate([
-                    'email'=>'required|email|unique:users',
-                ]);
-
-                $data['email'] = $req->input('email');
-
-            }
 
             // in case of changed password
             if(isset($password) || trim($password) !== '') {
@@ -75,8 +56,6 @@ class AdminController extends Controller
                     'password' => 'required|confirmed',
                 ]);
 
-                $data['password'] = Hash::make($req->input('password'));
-
             }
 
             $validated = $req->validate([
@@ -84,11 +63,7 @@ class AdminController extends Controller
                 'last_name'=>'required|string',
             ]);
 
-            $data['name'] = $req->input('name');
-            $data['last_name'] = $req->input('last_name');
-            $data['updated_at'] = $date;
-
-            DB::table('users')->where('id',$id)->update($data);
+            $user->editUser($req, $id);
 
             return redirect('admin/userprofile');
 
@@ -281,46 +256,19 @@ class AdminController extends Controller
 
     function manageemployee(User $user){
 
-        $employees = DB::table('departments')
-            ->select(DB::raw('departments.id AS department_id, departments.name AS department_name, users.id, users.name, users.last_name, users.role, users.email'))
-            ->join('users', 'departments.id', '=', 'users.department_id')
-            ->get();
-
-        //dd($user->manageemployee());
-        $employees = $user::find(2)->manageemployee();
-
-        dd($employees);
+        $employees = $user->manageemployee();
 
         return view('dashboards.admins.manageemployee', ['employees' => $employees]);
 
     }
 
-    function editemployee(Department $department, Request $req){
+    function editemployee(User $user, Department $department, Request $req){
 
         $id = $req->route()->id;
         
         if ($req->method() == "POST") {
 
-            $email = $req->input('email');
             $password = $req->input('password');
-
-            $date = date("Y-m-d H:i:s");
-
-            $user_email = DB::table('users')
-                    ->select('email')
-                    ->where('id', $id)
-                    ->get();
-
-            // in case of changed email
-            if($user_email[0]->email !== $email){
-                
-                $validated = $req->validate([
-                    'email'=>'required|email|unique:users',
-                ]);
-
-                $data['email'] = $req->input('email');
-
-            }
 
             // in case of changed password
             if(isset($password) || trim($password) !== '') {
@@ -328,8 +276,6 @@ class AdminController extends Controller
                 $validated = $req->validate([
                     'password' => 'required|confirmed',
                 ]);
-
-                $data['password'] = Hash::make($req->input('password'));
 
             }
 
@@ -340,13 +286,7 @@ class AdminController extends Controller
                 'department_id'=>'required|string',
             ]);
 
-            $data['name'] = $req->input('name');
-            $data['last_name'] = $req->input('last_name');
-            $data['role'] = $req->input('role');
-            $data['department_id'] = $req->input('department_id');
-            $data['updated_at'] = $date;
-
-            DB::table('users')->where('id',$id)->update($data);
+            $user->editUser($req, $id);
 
             return redirect('admin/manageemployee');
 
@@ -365,17 +305,14 @@ class AdminController extends Controller
 
     }
 
-    function deleteemployee(Request $req){
+    function deleteemployee(User $user, Request $req){
 
         $id = $req->route()->id;
 
         if($req->method() == 'POST'){
 
-            DB::table('users')->delete($id);
-
-            DB::table('vacations')
-                ->where('user_id','=', $id)
-                ->delete();
+            $user = User::find($id);
+            $user->delete();
 
             return redirect('admin/manageemployee');
             

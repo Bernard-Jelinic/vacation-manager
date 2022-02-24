@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Models\Department;
+use Illuminate\Support\Facades\Hash;
 
 class User extends Authenticatable
 {
@@ -50,6 +51,35 @@ class User extends Authenticatable
 
     function manageemployee(){
 
-        return $this->hasOne(Department::class);
+        return $this::select('departments.id AS department_id' , 'departments.name AS department_name', 'users.id', 'users.name', 'users.last_name', 'users.role', 'users.email')
+            ->join('departments', 'departments.id', '=', 'users.department_id')
+            ->get();
+
+    }
+
+    function editUser($req, $id){
+
+        $user = $this::find($id);
+
+        $user->name = $req->input('name');
+        $user->last_name = $req->input('last_name');
+        $user->email = $req->input('email');
+
+        //in case that role and department_id is selected like in edit employee section
+        if ($req->input('role') && $req->input('department_id')) {
+            
+            $user->role = $req->input('role');
+            $user->department_id = $req->input('department_id');
+
+        }
+
+        if ($req->input('password')) {
+
+            $user->password = Hash::make($req->input('password'));
+
+        }
+
+        $user->save();
+
     }
 }
