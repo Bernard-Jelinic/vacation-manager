@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Department;
+use App\Models\Vacation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -320,117 +321,61 @@ class AdminController extends Controller
 
    }
 
-    function allvacations(Request $req){
+    function allvacations(Vacation $vacation){
 
-        $data['admin_read'] = 1;
+        $display = 'all';
 
-        DB::table('vacations')
-            ->update($data);
-
-        $vacation_datas = DB::table('vacations')
-                    ->select(DB::raw(' vacations.id, vacations.depart, vacations.return, vacations.created_at, vacations.status, vacations.user_id, users.name, users.last_name'))
-                    ->join('users', 'vacations.user_id', '=', 'users.id')
-                    ->get();
-
-        // converting to better readible format for people
-        foreach ($vacation_datas as $value) {
-            $value->depart = date('d.m.Y', strtotime($value->depart));
-            $value->return = date('d.m.Y', strtotime($value->return));
-            $value->created_at = date('d.m.Y', strtotime($value->created_at));
-        }
+        $vacation_datas = $vacation->getAdminVacations($display);
 
         // variable display is because I can only have one view
-        return view('dashboards.admins.allvacations', ['vacation_datas' => $vacation_datas, 'display' => 'all']);
+        return view('dashboards.admins.allvacations', ['vacation_datas' => $vacation_datas, 'display' => $display]);
 
     }
 
-    function pendingvacations(){
+    function pendingvacations(Vacation $vacation){
 
-        $data['admin_read'] = 1;
+        $display = 'pending';
 
-        DB::table('vacations')
-            ->where('status', '=',0)
-            ->update($data);
-
-        $vacation_datas = DB::table('vacations')
-            ->select(DB::raw(' vacations.id, vacations.depart, vacations.return, vacations.created_at, vacations.status, vacations.user_id, users.name, users.last_name'))
-            ->where('vacations.status', '=', 0)
-            ->join('users', 'vacations.user_id', '=', 'users.id')
-            ->get();
-
-        // converting to better readible format for people
-        foreach ($vacation_datas as $value) {
-            $value->depart = date('d.m.Y', strtotime($value->depart));
-            $value->return = date('d.m.Y', strtotime($value->return));
-            $value->created_at = date('d.m.Y', strtotime($value->created_at));
-        }
+        $vacation_datas = $vacation->getAdminVacations($display);
 
         // variable display is because I can only have one view
-        return view('dashboards.admins.allvacations', ['vacation_datas' => $vacation_datas, 'display' => 'pending']);
+        return view('dashboards.admins.allvacations', ['vacation_datas' => $vacation_datas, 'display' => $display]);
 
     }
 
-    function approvedvacations(){
+    function approvedvacations(Vacation $vacation){
 
-        $data['admin_read'] = 1;
+        $display = 'approved';
 
-        DB::table('vacations')
-            ->where('status', '=',1)
-            ->update($data);
-
-        $vacation_datas = DB::table('vacations')
-            ->select(DB::raw(' vacations.id, vacations.depart, vacations.return, vacations.created_at, vacations.status, vacations.user_id, users.name, users.last_name'))
-            ->where('vacations.status', '=', 1)
-            ->join('users', 'vacations.user_id', '=', 'users.id')
-            ->get();
-
-        // converting to better readible format for people
-        foreach ($vacation_datas as $value) {
-            $value->depart = date('d.m.Y', strtotime($value->depart));
-            $value->return = date('d.m.Y', strtotime($value->return));
-            $value->created_at = date('d.m.Y', strtotime($value->created_at));
-        }
+        $vacation_datas = $vacation->getAdminVacations($display);
 
         // variable display is because I can only have one view
-        return view('dashboards.admins.allvacations', ['vacation_datas' => $vacation_datas, 'display' => 'approved']);
+        return view('dashboards.admins.allvacations', ['vacation_datas' => $vacation_datas, 'display' => $display]);
 
     }
 
-    function notapprovedvacations(){
+    function notapprovedvacations(Vacation $vacation){
 
-        $data['admin_read'] = 1;
+        $display = 'notapproved';
 
-        DB::table('vacations')
-            ->where('status', '=',2)
-            ->update($data);
-
-        $vacation_datas = DB::table('vacations')
-            ->select(DB::raw(' vacations.id, vacations.depart, vacations.return, vacations.created_at, vacations.status, vacations.user_id, users.name, users.last_name'))
-            ->where('vacations.status', '=', 2)
-            ->join('users', 'vacations.user_id', '=', 'users.id')
-            ->get();
-
-        // converting to better readible format for people
-        foreach ($vacation_datas as $value) {
-            $value->depart = date('d.m.Y', strtotime($value->depart));
-            $value->return = date('d.m.Y', strtotime($value->return));
-            $value->created_at = date('d.m.Y', strtotime($value->created_at));
-        }
+        $vacation_datas = $vacation->getAdminVacations($display);
 
         // variable display is because I can only have one view
-        return view('dashboards.admins.allvacations', ['vacation_datas' => $vacation_datas, 'display' => 'not approved']);
+        return view('dashboards.admins.allvacations', ['vacation_datas' => $vacation_datas, 'display' => $display]);
 
     }
 
-    function editvacation(Request $req){
+    function editvacation(Vacation $vacation, Request $req){
 
         $id = $req->route()->id;
 
-        $data['admin_read'] = 1;
+        // $data['admin_read'] = 1;
 
-        DB::table('vacations')
-            ->where('id',$id)
-            ->update($data);
+        // DB::table('vacations')
+        //     ->where('id',$id)
+        //     ->update($data);
+
+        $vacation->setOneAdminRead($id);
 
         if ($req->method()=="POST") {
             
@@ -452,7 +397,7 @@ class AdminController extends Controller
         }
 
         $vacation_data = DB::table('vacations')
-                    ->select(DB::raw('vacations.id, vacations.depart, vacations.return, vacations.created_at, vacations.status, vacations.user_id, users.name, users.last_name'))
+                    ->select(DB::raw('vacations.id, vacations.depart, vacations.return, vacations.status, vacations.user_id, users.name, users.last_name'))
                     ->join('users', 'vacations.user_id', '=', 'users.id')
                     ->where('vacations.id', '=', $id)
                     ->get();
@@ -461,7 +406,6 @@ class AdminController extends Controller
         foreach ($vacation_data as $value) {
             $value->depart = date('d.m.Y', strtotime($value->depart));
             $value->return = date('d.m.Y', strtotime($value->return));
-            $value->created_at = date('d.m.Y', strtotime($value->created_at));
         }
 
         return view('dashboards.admins.editvacation', ['vacation_data' => $vacation_data]);

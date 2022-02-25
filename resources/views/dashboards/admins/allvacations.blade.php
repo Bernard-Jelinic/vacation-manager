@@ -27,7 +27,7 @@
 
                         <tr><td>{{$vacation_data->name}}</td>
                         <td id="user_id" class="user_id" name="user_id" value="{{$vacation_data->id}}">{{$vacation_data->id}}</td>
-                        <td>{{$vacation_data->depart}}</td><td>{{$vacation_data->return}}</td><td>{{$vacation_data->created_at}}</td>
+                        <td>{{$vacation_data->depart}}</td><td>{{$vacation_data->return}}</td><td>{{$vacation_data->created_at->format('m.d.Y')}}</td>
                         
                         <td>
                             @if ($vacation_data->status == 0)
