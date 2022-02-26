@@ -26,6 +26,11 @@
                     </div>
 
                     <div class="form-group">
+                        <label>Date od application</label>
+                        <h4>{{$key->created_at}}</h4>
+                    </div>
+
+                    <div class="form-group">
                         <label>Vacation Status</label>
                     
                             @csrf

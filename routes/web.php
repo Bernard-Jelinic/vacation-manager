@@ -77,7 +77,7 @@ Route::group(['prefix'=>'admin', 'middleware'=>['isAdmin','auth','PreventBackHis
 
 Route::group(['prefix'=>'manager', 'middleware'=>['isManager','auth','PreventBackHistory']], function(){
 
-    Route::get('dashboard',[ManagerController::class,'index'])->name('manager.dashboard');
+    Route::get('',[ManagerController::class,'index'])->name('manager.dashboard');
     Route::get('fetchnotification',[ManagerController::class,'fetchnotification']);
 
     Route::get('userprofile',[ManagerController::class,'userprofile'])->name('manager.userprofile');
@@ -94,7 +94,7 @@ Route::group(['prefix'=>'manager', 'middleware'=>['isManager','auth','PreventBac
 
 Route::group(['prefix'=>'user', 'middleware'=>['isUser','auth','PreventBackHistory']], function(){
 
-    Route::get('dashboard',[UserController::class,'index'])->name('user.dashboard');
+    Route::get('',[UserController::class,'index'])->name('user.dashboard');
     Route::get('fetchnotification',[UserController::class,'fetchnotification']);
 
     Route::get('userprofile',[UserController::class,'userprofile'])->name('user.userprofile');

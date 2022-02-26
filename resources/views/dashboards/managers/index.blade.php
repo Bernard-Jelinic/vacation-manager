@@ -153,7 +153,7 @@
                                         <span class="from">${element.name} ${element.last_name} send request</span>
                                         </span>
                                         <span class="subject">
-                                        <span class="from">created ${element.created_at}</span>
+                                        <span class="from">created ${element.formated_created_at}</span>
                                         </span>
                                     </a>
                                 </li>

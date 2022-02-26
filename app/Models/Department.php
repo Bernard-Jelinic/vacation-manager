@@ -24,4 +24,18 @@ class Department extends Model
 
     }
 
+    public function editDepartment($data, $id){
+
+        $this::where('id', '=', $id)
+            ->update($data);
+
+    }
+
+    public function getLatestDepartmentId(){
+
+        return $this::latest('id')
+                ->first();
+
+    }
+
 }

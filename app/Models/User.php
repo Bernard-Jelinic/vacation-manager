@@ -8,7 +8,6 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Models\Department;
-use Illuminate\Support\Facades\Hash;
 
 class User extends Authenticatable
 {
@@ -57,29 +56,45 @@ class User extends Authenticatable
 
     }
 
-    function editUser($req, $id){
+    function editUser($data, $id){
 
-        $user = $this::find($id);
+        $this::where('id', '=', $id)
+            ->update($data);
 
-        $user->name = $req->input('name');
-        $user->last_name = $req->input('last_name');
-        $user->email = $req->input('email');
+    }
 
-        //in case that role and department_id is selected like in edit employee section
-        if ($req->input('role') && $req->input('department_id')) {
-            
-            $user->role = $req->input('role');
-            $user->department_id = $req->input('department_id');
+    function showEditUser($id){
 
-        }
+        return $this::select('departments.id AS department_id', 'departments.name AS department_name', 'users.id', 'users.name', 'users.last_name', 'users.role', 'users.email')
+            ->where('users.id', '=', $id)
+            ->join('departments', 'users.department_id', '=', 'departments.id')
+            ->get();
 
-        if ($req->input('password')) {
+    }
 
-            $user->password = Hash::make($req->input('password'));
+    function userprofile($id){
 
-        }
+        return $this::select('name', 'last_name', 'email')
+            ->where('id', '=', $id)
+            ->get();
 
-        $user->save();
+    }
+
+    function addDepartment(){
+
+        return $this::select('id', 'name', 'last_name')
+            ->where('role', '=', 'manager')
+            ->get();
+
+    }
+
+    function getDepartmentId($id){
+
+        $department_id = $this::select('department_id')
+            ->where('id', '=', $id)
+            ->get();
+
+        return $department_id = $department_id[0]->department_id;
 
     }
 }

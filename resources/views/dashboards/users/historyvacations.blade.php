@@ -17,7 +17,7 @@
                 @if ($vacation_datas)
                     @foreach ($vacation_datas as $vacation_data)
 
-                        <tr><td>{{$vacation_data->depart}}</td><td>{{$vacation_data->return}}</td><td>{{$vacation_data->created_at}}</td>
+                        <tr><td>{{$vacation_data->depart}}</td><td>{{$vacation_data->return}}</td><td>{{$vacation_data->formated_created_at}}</td>
                         
                             <td>
                                 @if ($vacation_data->status == 0)

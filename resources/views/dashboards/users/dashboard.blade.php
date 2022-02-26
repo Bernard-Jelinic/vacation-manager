@@ -23,7 +23,7 @@
                                     <a href="historyvacations">
                                         <div class="desc">
                                             <div class="details">
-                                                <p style="font-size:12px;color:black;">The request created on ${element.created_at} changed its status</p>
+                                                <p style="font-size:12px;color:black;">The request created on ${element.formated_created_at} changed its status</p>
                                             </div>
                                         </div>
                                     </a>

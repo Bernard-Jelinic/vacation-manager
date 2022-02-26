@@ -12,19 +12,9 @@ use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
-    function fetchnotification(){
+    function fetchnotification(Vacation $vacation){
 
-        $notifications = DB::table('vacations')
-                ->select(DB::raw('vacations.id, vacations.created_at, users.name, users.last_name'))
-                ->where('status', '=', 0)
-                ->where('admin_read', '=', 0)
-                ->join('users', 'vacations.user_id', '=', 'users.id')
-                ->get();
-
-        // converting to better readible format for people
-        foreach ($notifications as $value) {
-            $value->created_at = date('d.m.Y', strtotime($value->created_at));
-        }
+        $notifications = $vacation->adminFetchnotification();
 
         //to display notification number
         $counter = count($notifications);
@@ -64,22 +54,37 @@ class AdminController extends Controller
                 'last_name'=>'required|string',
             ]);
 
-            $user->editUser($req, $id);
+                        $data['name'] = $req->input('name');
+                        $data['last_name'] = $req->input('last_name');
+                        $data['email'] = $req->input('email');
+
+                        //in case that role and department_id is selected like in edit employee section
+                        if ($req->input('role') && $req->input('department_id')) {
+                            
+                            $data['role'] = $req->input('role');
+                            $data['department_id'] = $req->input('department_id');
+
+                        }
+
+                        if ($req->input('password')) {
+
+                            $data['password'] = Hash::make($req->input('password'));
+
+                        }
+
+            $user->editUser($data, $id);
 
             return redirect('admin/userprofile');
 
         }
 
-        $user = DB::table('users')
-            ->select(DB::raw('name, last_name, email'))
-            ->where('id', '=', $id)
-            ->get();
+        $user = $user->userprofile($id);
 
         return view('dashboards.admins.userprofile',['user' => $user[0]]);
 
     }
 
-    function adddepartment(Request $req, $type = '',$id = ''){
+    function adddepartment(User $user, Department $department, Request $req){
 
         if($req->method() == 'POST'){
 
@@ -89,16 +94,24 @@ class AdminController extends Controller
 
             $data['name'] = $req->input('name');
 
-            DB::table('departments')->insert($data);
+            Department::create([
+                'name' => $req->input('name'),
+            ]);
 
             // admin doesn't need to select manager
             if ($req->input('user_id')!= 'Select departments manager') {
 
                 $user_id = $req->input('user_id');
 
-                $department_id = DB::table('departments')
-                        ->latest('id')
-                        ->first();
+                // // $department_id = DB::table('departments')
+                // //         ->latest('id')
+                // //         ->first();
+
+                $department_id = $department->getLatestDepartmentId();
+
+                // $data['department_id'] = $department_id->id;
+
+                // $user->editUser($data, $user_id);
 
                 DB::table('users')->where('id', $user_id)->update(['department_id' => $department_id->id]);
 
@@ -108,10 +121,7 @@ class AdminController extends Controller
 
         }
 
-        $managers = DB::table('users')
-            ->select(DB::raw('id, name, last_name'))
-            ->where('role', '=', 'manager')
-            ->get();
+        $managers = $user->addDepartment();
 
         return view('dashboards.admins.adddepartment', ['managers'=>$managers]);
 
@@ -154,13 +164,14 @@ class AdminController extends Controller
             }
 
             $depart_manag[] = $data;
+
         }
 
         return view('dashboards.admins.managedepartments', ['departments' => $depart_manag]);
 
     }
 
-    function editdepartment(Request $req){
+    function editdepartment(Department $department, Request $req){
 
         $id = $req->route()->id;
 
@@ -173,9 +184,7 @@ class AdminController extends Controller
             $data['name'] = $req->input('name');
             $data['updated_at'] = date("Y-m-d H:i:s");
 
-            DB::table('departments')
-                ->where('id',$id)
-                ->update($data);
+            $department->editDepartment($data, $id);
 
             // admin doesn't need to select manager
             if ($req->input('manager_id') != 'Select departments manager') {
@@ -204,13 +213,14 @@ class AdminController extends Controller
 
     }
 
-    function deletedepartment(Request $req){
+    function deletedepartment(Department $department, Request $req){
 
         $id = $req->route()->id;
 
         if($req->method() == 'POST'){
 
-            DB::table('departments')->delete($id);
+            $department = Department::find($id);
+            $department->delete();
 
             return redirect('admin/managedepartments');
             
@@ -226,7 +236,7 @@ class AdminController extends Controller
                 'name'=>'required|alpha',
                 'last_name'=>'required|alpha',
                 'role'=>'required|alpha',
-                'department_id'=>'required',
+                'department_id'=>'required|numeric',
                 'email'=>'required|email|unique:users',
                 'password' => 'required|confirmed',
             ]);
@@ -287,17 +297,31 @@ class AdminController extends Controller
                 'department_id'=>'required|string',
             ]);
 
-            $user->editUser($req, $id);
+            $data['name'] = $req->input('name');
+            $data['last_name'] = $req->input('last_name');
+            $data['email'] = $req->input('email');
+
+            //in case that role and department_id is selected like in edit employee section
+            if ($req->input('role') && $req->input('department_id')) {
+                
+                $data['role'] = $req->input('role');
+                $data['department_id'] = $req->input('department_id');
+
+            }
+
+            if ($req->input('password')) {
+
+                $data['password'] = Hash::make($req->input('password'));
+
+            }
+
+            $user->editUser($data, $id);
 
             return redirect('admin/manageemployee');
 
         }
 
-        $employee = DB::table('departments')
-            ->select(DB::raw('departments.id AS department_id, departments.name AS department_name, users.id, users.name, users.last_name, users.role, users.email'))
-            ->where('users.id', '=', $id)
-            ->join('users', 'departments.id', '=', 'users.department_id')
-            ->get();
+        $employee = $user->showEditUser($id);
 
         // it needs to display departments
         $departments = $department->getDepartment();
@@ -369,13 +393,9 @@ class AdminController extends Controller
 
         $id = $req->route()->id;
 
-        // $data['admin_read'] = 1;
+        $vacation_data['admin_read'] = 1;
 
-        // DB::table('vacations')
-        //     ->where('id',$id)
-        //     ->update($data);
-
-        $vacation->setOneAdminRead($id);
+        $vacation->editVacation($vacation_data, $id);
 
         if ($req->method()=="POST") {
             
@@ -388,25 +408,13 @@ class AdminController extends Controller
             $data['admin_read'] = 1;
             $data['user_notified'] = 0;
 
-            DB::table('vacations')
-                ->where('id',$id)
-                ->update($data);
+            $vacation->editVacation($data, $id);
 
             return redirect('admin/allvacations');
 
         }
 
-        $vacation_data = DB::table('vacations')
-                    ->select(DB::raw('vacations.id, vacations.depart, vacations.return, vacations.status, vacations.user_id, users.name, users.last_name'))
-                    ->join('users', 'vacations.user_id', '=', 'users.id')
-                    ->where('vacations.id', '=', $id)
-                    ->get();
-
-        // converting to better readible format for people
-        foreach ($vacation_data as $value) {
-            $value->depart = date('d.m.Y', strtotime($value->depart));
-            $value->return = date('d.m.Y', strtotime($value->return));
-        }
+        $vacation_data = $vacation->showEditVacation($id);
 
         return view('dashboards.admins.editvacation', ['vacation_data' => $vacation_data]);
 

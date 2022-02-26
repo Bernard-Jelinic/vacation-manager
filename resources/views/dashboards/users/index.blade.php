@@ -145,7 +145,7 @@
                                 <li>
                                     <a href="historyvacations">
                                         <span class="subject">
-                                        <span class="from">The request created on ${element.created_at}</span>
+                                        <span class="from">The request created on ${element.formated_created_at}</span>
                                         </span>
                                         <span class="subject">
                                         <span class="from">changed its status</span>

@@ -2,27 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use App\Models\Vacation;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
 
-    function fetchnotification(){
+    function fetchnotification(User $user, Vacation $vacation){
 
-        $notifications = DB::table('vacations')
-                ->select(DB::raw('vacations.id, vacations.created_at, users.name, users.last_name'))
-                ->where('status', '!=', 0)
-                ->where('user_notified', '=', 0)
-                ->where('user_id', '=', Auth::user()->id)
-                ->join('users', 'vacations.user_id', '=', 'users.id')
-                ->get();
+        $id = Auth::user()->id;
 
-        // converting to better readible format for people
-        foreach ($notifications as $value) {
-            $value->created_at = date('d.m.Y', strtotime($value->created_at));
-        }
+        $notifications = $vacation->userFetchnotification($id);
 
         //to display notification number
         $counter = count($notifications);
@@ -41,32 +33,13 @@ class UserController extends Controller
 
     }
 
-    function userprofile(Request $req){
+    function userprofile(User $user,Request $req){
 
         $id = Auth::user()->id;
 
         if($req->method() == 'POST'){
 
-            $email = $req->input('email');
             $password = $req->input('password');
-
-            $date = date("Y-m-d H:i:s");
-
-            $user_email = DB::table('users')
-                    ->select('email')
-                    ->where('id', $id)
-                    ->get();
-
-            // in case of changed email
-            if($user_email[0]->email !== $email){
-                
-                $validated = $req->validate([
-                    'email'=>'required|email|unique:users',
-                ]);
-
-                $data['email'] = $req->input('email');
-
-            }
 
             // in case of changed password
             if(isset($password) || trim($password) !== '') {
@@ -74,8 +47,6 @@ class UserController extends Controller
                 $validated = $req->validate([
                     'password' => 'required|confirmed',
                 ]);
-
-                $data['password'] = Hash::make($req->input('password'));
 
             }
 
@@ -86,24 +57,35 @@ class UserController extends Controller
 
             $data['name'] = $req->input('name');
             $data['last_name'] = $req->input('last_name');
-            $data['updated_at'] = $date;
+            $data['email'] = $req->input('email');
 
-            DB::table('users')->where('id',$id)->update($data);
+            //in case that role and department_id is selected like in edit employee section
+            if ($req->input('role') && $req->input('department_id')) {
+                
+                $data['role'] = $req->input('role');
+                $data['department_id'] = $req->input('department_id');
+
+            }
+
+            if ($req->input('password')) {
+
+                $data['password'] = Hash::make($req->input('password'));
+
+            }
+
+            $user->editUser($data, $id);
 
             return redirect('user/userprofile');
 
         }
 
-        $user = DB::table('users')
-            ->select(DB::raw('name, last_name, email'))
-            ->where('id', '=', $id)
-            ->get();
+        $user = $user->userprofile($id);
 
         return view('dashboards.users.userprofile',['user' => $user[0]]);
 
     }
 
-    function applyvacation(Request $req){
+    function applyvacation(Vacation $vacation, Request $req){
 
         if($req->method() == 'POST'){
 
@@ -118,7 +100,7 @@ class UserController extends Controller
 
             $date = date("Y-m-d H:i:s");
 
-            $data = [
+            Vacation::create([
                 'depart' => $depart,
                 'return' => $return,
                 'created_at' => $date,
@@ -128,10 +110,7 @@ class UserController extends Controller
                 'manager_read' => 0,
                 'user_notified' => 0,
                 'user_id' => Auth::user()->id,
-
-            ];
-
-            DB::table('vacations')->insert($data);
+            ]);
 
             return redirect('user/');
             
@@ -141,28 +120,16 @@ class UserController extends Controller
 
     }
 
-    function historyvacations(){
+    function historyvacations(Vacation $vacation){
 
         $user_id = Auth::user()->id;
 
         // because user is read all the notifications
         $data['user_notified'] = 1;
 
-        DB::table('vacations')
-            ->where('user_id',$user_id)
-            ->update($data);
+        $vacation->historyVacations($data, $user_id);
 
-        $vacation_datas = DB::table('vacations')
-                    ->select(DB::raw('vacations.id, vacations.depart, vacations.return, vacations.created_at, vacations.status'))
-                    ->where('user_id', '=', $user_id)
-                    ->get();
-
-        // converting to better format for people
-        foreach ($vacation_datas as $value) {
-            $value->depart = date('d.m.Y', strtotime($value->depart));
-            $value->return = date('d.m.Y', strtotime($value->return));
-            $value->created_at = date('d.m.Y', strtotime($value->created_at));
-        }
+        $vacation_datas = $vacation->showHistoryvacations($user_id);
 
         return view('dashboards.users.historyvacations', ['vacation_datas' => $vacation_datas]);
 

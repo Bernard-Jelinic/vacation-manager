@@ -2,28 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use App\Models\Vacation;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class ManagerController extends Controller
 {
 
-    function fetchnotification(){
+    function fetchnotification(User $user, Vacation $vacation){
 
         $manager_id = Auth::user()->id;
 
-        $notifications = DB::table('vacations')
-            ->select(DB::raw('vacations.id, vacations.created_at, users.name, users.last_name'))
-            ->where('status', '=', 0)
-            ->where('manager_read', '=', 0)
-            ->join('users', 'vacations.user_id', '=', 'users.id')
-            ->get();
+        $department_id = $user->getDepartmentId($manager_id);
 
-        // converting to better readible format for people
-        foreach ($notifications as $value) {
-            $value->created_at = date('d.m.Y', strtotime($value->created_at));
-        }
+        $notifications = $vacation->managerFetchnotification($manager_id, $department_id);
 
         //to display notification number
         $counter = count($notifications);
@@ -40,32 +34,13 @@ class ManagerController extends Controller
         return view('dashboards.managers.dashboard');
     }
 
-    function userprofile(Request $req){
+    function userprofile(User $user, Request $req){
 
         $id = Auth::user()->id;
 
         if($req->method() == 'POST'){
 
-            $email = $req->input('email');
             $password = $req->input('password');
-
-            $date = date("Y-m-d H:i:s");
-
-            $user_email = DB::table('users')
-                    ->select('email')
-                    ->where('id', $id)
-                    ->get();
-
-            // in case of changed email
-            if($user_email[0]->email !== $email){
-                
-                $validated = $req->validate([
-                    'email'=>'required|email|unique:users',
-                ]);
-
-                $data['email'] = $req->input('email');
-
-            }
 
             // in case of changed password
             if(isset($password) || trim($password) !== '') {
@@ -73,8 +48,6 @@ class ManagerController extends Controller
                 $validated = $req->validate([
                     'password' => 'required|confirmed',
                 ]);
-
-                $data['password'] = Hash::make($req->input('password'));
 
             }
 
@@ -85,102 +58,84 @@ class ManagerController extends Controller
 
             $data['name'] = $req->input('name');
             $data['last_name'] = $req->input('last_name');
-            $data['updated_at'] = $date;
+            $data['email'] = $req->input('email');
 
-            DB::table('users')->where('id',$id)->update($data);
+            //in case that role and department_id is selected like in edit employee section
+            if ($req->input('role') && $req->input('department_id')) {
+                
+                $data['role'] = $req->input('role');
+                $data['department_id'] = $req->input('department_id');
+
+            }
+
+            if ($req->input('password')) {
+
+                $data['password'] = Hash::make($req->input('password'));
+
+            }
+
+            $user->editUser($data, $id);
 
             return redirect('manager/userprofile');
 
         }
 
-        $user = DB::table('users')
-            ->select(DB::raw('name, last_name, email'))
-            ->where('id', '=', $id)
-            ->get();
+        $user = $user->userprofile($id);
 
         return view('dashboards.managers.userprofile',['user' => $user[0]]);
 
     }
 
-    function allvacations(Request $req){
+    function allvacations(User $user, Vacation $vacation){
 
         $manager_id = Auth::user()->id;
 
-        $department_id = DB::table('users')
-                    ->select(DB::raw('department_id'))
-                    ->where('id', '=', $manager_id)
-                    ->get();
+        $display = 'all';
 
-        $department_id = $department_id[0]->department_id;
+        $department_id = $user->getDepartmentId($manager_id);
 
-        $vacation_datas = DB::table('vacations')
-            ->select(DB::raw('vacations.id, vacations.depart, vacations.return, vacations.created_at, vacations.user_notified, vacations.status, users.name, users.last_name'))
-            ->where('department_id', '=', $department_id)
-            ->where('role', '=', 'user')
-            ->join('users', 'vacations.user_id', '=', 'users.id')
-            ->get();
+        $vacation_datas = $vacation->getManagerVacations($department_id, $display);
 
         $manager_ids = array();
 
-        // converting to better readible format for people
         foreach ($vacation_datas as $value) {
-            $value->depart = date('d.m.Y', strtotime($value->depart));
-            $value->return = date('d.m.Y', strtotime($value->return));
-            $value->created_at = date('d.m.Y', strtotime($value->created_at));
             $manager_ids[] = $value->id;
         }
 
         $data['manager_read'] = 1;
 
         // writing all managers employee vacations as manager_read
-        foreach ($manager_ids as $value) {
-            DB::table('vacations')
-                ->where('id', '=', $value)
-                ->update($data);
+        foreach ($manager_ids as $id) {
+            $vacation->editVacation($data, $id);
         }
 
         // variable display is so I can only have one view
-        return view('dashboards.managers.allvacations', ['vacation_datas' => $vacation_datas, 'display' => 'all']);
+        return view('dashboards.managers.allvacations', ['vacation_datas' => $vacation_datas, 'display' => $display]);
 
     }
 
-    function pendingvacations(){
+    function pendingvacations(User $user, Vacation $vacation){
 
         $manager_id = Auth::user()->id;
 
-        $department_id = DB::table('users')
-                    ->select(DB::raw('department_id'))
-                    ->where('id', '=', $manager_id)
-                    ->get();
+        $display = 'pending';
 
-        $department_id = $department_id[0]->department_id;
+        $department_id = $user->getDepartmentId($manager_id);
 
-        $vacation_datas = DB::table('vacations')
-            ->select(DB::raw('vacations.id, vacations.depart, vacations.return, vacations.created_at, vacations.user_notified, vacations.status, users.name, users.last_name'))
-            ->where('department_id', '=', $department_id)
-            ->where('role', '=', 'user')
-            ->where('vacations.status', '=', 0)
-            ->join('users', 'vacations.user_id', '=', 'users.id')
-            ->get();
+
+        $vacation_datas = $vacation->getManagerVacations($department_id, $display);
 
         $manager_ids = array();
 
-        // converting to better readible format for people
         foreach ($vacation_datas as $value) {
-            $value->depart = date('d.m.Y', strtotime($value->depart));
-            $value->return = date('d.m.Y', strtotime($value->return));
-            $value->created_at = date('d.m.Y', strtotime($value->created_at));
             $manager_ids[] = $value->id;
         }
 
         $data['manager_read'] = 1;
 
-        // writing managers employee pendings vacations as manager_read
-        foreach ($manager_ids as $value) {
-            DB::table('vacations')
-                ->where('id', '=', $value)
-                ->where('vacations.status', '=', 0)
-                ->update($data);
+        // writing all managers employee vacations as manager_read
+        foreach ($manager_ids as $id) {
+            $vacation->editVacation($data, $id);
         }
 
         // variable display is because I can only have one view
@@ -188,103 +143,70 @@ class ManagerController extends Controller
 
     }
 
-    function approvedvacations(){
+    function approvedvacations(User $user, Vacation $vacation){
 
         $manager_id = Auth::user()->id;
 
-        $department_id = DB::table('users')
-                    ->select(DB::raw('department_id'))
-                    ->where('id', '=', $manager_id)
-                    ->get();
+        $display = 'approved';
 
-        $department_id = $department_id[0]->department_id;
+        $department_id = $user->getDepartmentId($manager_id);
 
-        $vacation_datas = DB::table('vacations')
-            ->select(DB::raw('vacations.id, vacations.depart, vacations.return, vacations.created_at, vacations.user_notified, vacations.status, users.name, users.last_name'))
-            ->where('department_id', '=', $department_id)
-            ->where('role', '=', 'user')
-            ->where('vacations.status', '=', 1)
-            ->join('users', 'vacations.user_id', '=', 'users.id')
-            ->get();
+        $vacation_datas = $vacation->getManagerVacations($department_id, $display);
 
         $manager_ids = array();
 
-        // converting to better readible format for people
         foreach ($vacation_datas as $value) {
-            $value->depart = date('d.m.Y', strtotime($value->depart));
-            $value->return = date('d.m.Y', strtotime($value->return));
-            $value->created_at = date('d.m.Y', strtotime($value->created_at));
             $manager_ids[] = $value->id;
         }
 
         $data['manager_read'] = 1;
 
-        // writing managers employee approved vacations as manager_read
-        foreach ($manager_ids as $value) {
-            DB::table('vacations')
-                ->where('id', '=', $value)
-                ->where('vacations.status', '=', 1)
-                ->update($data);
+        // writing all managers employee vacations as manager_read
+        foreach ($manager_ids as $id) {
+            $vacation->editVacation($data, $id);
         }
 
         // variable display is because I can only have one view
-        return view('dashboards.managers.allvacations', ['vacation_datas' => $vacation_datas, 'display' => 'approved']);
+        return view('dashboards.managers.allvacations', ['vacation_datas' => $vacation_datas, 'display' => $display]);
 
     }
 
-    function notapprovedvacations(){
+    function notapprovedvacations(User $user, Vacation $vacation){
 
         $manager_id = Auth::user()->id;
 
-        $department_id = DB::table('users')
-                    ->select(DB::raw('department_id'))
-                    ->where('id', '=', $manager_id)
-                    ->get();
+        $display = 'notapproved';
 
-        $department_id = $department_id[0]->department_id;
+        $department_id = $user->getDepartmentId($manager_id);
 
-        $vacation_datas = DB::table('vacations')
-            ->select(DB::raw('vacations.id, vacations.depart, vacations.return, vacations.created_at, vacations.user_notified, vacations.status, users.name, users.last_name'))
-            ->where('department_id', '=', $department_id)
-            ->where('role', '=', 'user')
-            ->where('vacations.status', '=', 2)
-            ->join('users', 'vacations.user_id', '=', 'users.id')
-            ->get();
+
+        $vacation_datas = $vacation->getManagerVacations($department_id, $display);
 
         $manager_ids = array();
 
-        // converting to better readible format for people
         foreach ($vacation_datas as $value) {
-            $value->depart = date('d.m.Y', strtotime($value->depart));
-            $value->return = date('d.m.Y', strtotime($value->return));
-            $value->created_at = date('d.m.Y', strtotime($value->created_at));
             $manager_ids[] = $value->id;
         }
 
         $data['manager_read'] = 1;
 
-        // writing managers employee not approved vacations as manager_read
-        foreach ($manager_ids as $value) {
-            DB::table('vacations')
-                ->where('id', '=', $value)
-                ->where('vacations.status', '=', 2)
-                ->update($data);
+        // writing all managers employee vacations as manager_read
+        foreach ($manager_ids as $id) {
+            $vacation->editVacation($data, $id);
         }
 
         // variable display is because I can only have one view
-        return view('dashboards.managers.allvacations', ['vacation_datas' => $vacation_datas, 'display' => 'not approved']);
+        return view('dashboards.managers.allvacations', ['vacation_datas' => $vacation_datas, 'display' => $display]);
 
     }
 
-    function editvacation(Request $req){
+    function editvacation(Vacation $vacation, Request $req){
 
         $id = $req->route()->id;
 
-        $data['manager_read'] = 1;
+        $vacation_data['manager_read'] = 1;
 
-        DB::table('vacations')
-            ->where('id',$id)
-            ->update($data);
+        $vacation->editVacation($vacation_data, $id);
 
         if ($req->method()=="POST") {
             
@@ -294,28 +216,16 @@ class ManagerController extends Controller
 
             $data['updated_at'] = date("Y-m-d H:i:s");
             $data['status'] = $req->input('status');
+            $data['manager_read'] = 1;
             $data['user_notified'] = 0;
 
-            DB::table('vacations')
-                ->where('id',$id)
-                ->update($data);
+            $vacation->editVacation($data, $id);
 
             return redirect('manager/allvacations');
 
         }
 
-        $vacation_data = DB::table('vacations')
-            ->select(DB::raw('vacations.id, vacations.depart, vacations.return, vacations.created_at, vacations.status, vacations.user_id, users.name, users.last_name'))
-            ->join('users', 'vacations.user_id', '=', 'users.id')
-            ->where('vacations.id', '=', $id)
-            ->get();
-
-        // converting to better readible format for people
-        foreach ($vacation_data as $value) {
-            $value->depart = date('d.m.Y', strtotime($value->depart));
-            $value->return = date('d.m.Y', strtotime($value->return));
-            $value->created_at = date('d.m.Y', strtotime($value->created_at));
-        }
+        $vacation_data = $vacation->showEditVacation($id);
 
         return view('dashboards.managers.editvacation', ['vacation_data' => $vacation_data]);
 
