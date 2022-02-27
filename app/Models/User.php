@@ -94,7 +94,16 @@ class User extends Authenticatable
             ->where('id', '=', $id)
             ->get();
 
+        //because if I return raw $department_id it is an array
         return $department_id = $department_id[0]->department_id;
+
+    }
+
+    public function manageEditDepartments(){
+
+        return $this::select('id', 'name', 'last_name', 'department_id')
+            ->where('role', '=', 'manager')
+            ->get();
 
     }
 }

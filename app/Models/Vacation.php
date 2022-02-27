@@ -205,5 +205,4 @@ class Vacation extends Model
 
     }
 
-
 }

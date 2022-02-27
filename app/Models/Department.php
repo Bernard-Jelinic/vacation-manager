@@ -16,10 +16,18 @@ class Department extends Model
         'updated_at'
     ];
 
-    public function getDepartment(){
+    public function getDepartments(){
 
         return $this::select('id', 'name')
             ->orderBy('id', 'DESC')
+            ->get();
+
+    }
+
+    public function getDepartmentById($id){
+
+        return $this::select('name')
+            ->where('id', '=', $id)
             ->get();
 
     }

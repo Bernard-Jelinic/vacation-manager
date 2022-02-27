@@ -6,7 +6,6 @@ use App\Models\User;
 use App\Models\Department;
 use App\Models\Vacation;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 
@@ -54,23 +53,23 @@ class AdminController extends Controller
                 'last_name'=>'required|string',
             ]);
 
-                        $data['name'] = $req->input('name');
-                        $data['last_name'] = $req->input('last_name');
-                        $data['email'] = $req->input('email');
+            $data['name'] = $req->input('name');
+            $data['last_name'] = $req->input('last_name');
+            $data['email'] = $req->input('email');
 
-                        //in case that role and department_id is selected like in edit employee section
-                        if ($req->input('role') && $req->input('department_id')) {
-                            
-                            $data['role'] = $req->input('role');
-                            $data['department_id'] = $req->input('department_id');
+            //in case that role and department_id is selected like in edit employee section
+            if ($req->input('role') && $req->input('department_id')) {
+                
+                $data['role'] = $req->input('role');
+                $data['department_id'] = $req->input('department_id');
 
-                        }
+            }
 
-                        if ($req->input('password')) {
+            if ($req->input('password')) {
 
-                            $data['password'] = Hash::make($req->input('password'));
+                $data['password'] = Hash::make($req->input('password'));
 
-                        }
+            }
 
             $user->editUser($data, $id);
 
@@ -103,17 +102,11 @@ class AdminController extends Controller
 
                 $user_id = $req->input('user_id');
 
-                // // $department_id = DB::table('departments')
-                // //         ->latest('id')
-                // //         ->first();
-
                 $department_id = $department->getLatestDepartmentId();
 
-                // $data['department_id'] = $department_id->id;
+                $data['department_id'] = $department_id->id;
 
-                // $user->editUser($data, $user_id);
-
-                DB::table('users')->where('id', $user_id)->update(['department_id' => $department_id->id]);
+                $user->editUser($data, $user_id);
 
             }
 
@@ -127,16 +120,11 @@ class AdminController extends Controller
 
     }
 
-    function managedepartments(){
+    function managedepartments(Department $department, User $user){
 
-        $departments = DB::table('departments')
-                ->select(DB::raw('id, name'))
-                ->get();
+        $departments = $department->getDepartments();
 
-        $managers = DB::table('users')
-                ->select(DB::raw('id, name, last_name, department_id'))
-                ->where('role', '=', 'manager')
-                ->get();
+        $managers = $user->manageEditDepartments();
 
         $depart_manag = array();
 
@@ -171,7 +159,7 @@ class AdminController extends Controller
 
     }
 
-    function editdepartment(Department $department, Request $req){
+    function editdepartment(Department $department, User $user, Request $req){
 
         $id = $req->route()->id;
 
@@ -191,7 +179,10 @@ class AdminController extends Controller
 
                 $manager_id = $req->input('manager_id');
 
-                DB::table('users')->where('id', $manager_id)->update(['department_id' => $id]);
+                $user_data['department_id'] = $id;
+                $user_data['updated_at'] = date("Y-m-d H:i:s");
+
+                $user->editUser($user_data, $manager_id);
 
             }
 
@@ -199,15 +190,9 @@ class AdminController extends Controller
 
         }
 
-        $department = DB::table('departments')
-                ->select('name')
-                ->where('id', '=', $id)
-                ->get();
+        $department = $department->getDepartmentById($id);
 
-        $managers = DB::table('users')
-                ->select(DB::raw('id, name, last_name, department_id'))
-                ->where('role', '=', 'manager')
-                ->get();
+        $managers = $user->manageEditDepartments();
 
         return view('dashboards.admins.editdepartment', ['department' => $department, 'managers' => $managers, 'department_id' => $id]);
 
@@ -259,7 +244,7 @@ class AdminController extends Controller
         }
 
         // it needs to display departments
-        $departments = $department->getDepartment();
+        $departments = $department->getDepartments();
 
         return view('dashboards.admins.addemployee', ['departments' => $departments]);
 
@@ -324,7 +309,7 @@ class AdminController extends Controller
         $employee = $user->showEditUser($id);
 
         // it needs to display departments
-        $departments = $department->getDepartment();
+        $departments = $department->getDepartments();
 
         return view('dashboards.admins.editemployee', ['employee' => $employee,'departments' => $departments]);
 
