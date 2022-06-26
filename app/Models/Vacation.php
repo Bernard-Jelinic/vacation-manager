@@ -5,7 +5,7 @@ namespace App\Models;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Scopes\VacationScope;
+// use App\Scopes\VacationScope;
 
 class Vacation extends Model
 {
@@ -25,10 +25,10 @@ class Vacation extends Model
         'user_id'
     ];
 
-    public static function booted()
-    {
-        static::addGlobalScope(new VacationScope);
-    }
+    // public static function booted()
+    // {
+    //     static::addGlobalScope(new VacationScope);
+    // }
 
     public function adminFetchnotification(){
 
