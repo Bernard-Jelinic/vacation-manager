@@ -20,7 +20,7 @@
                             response.notifications.forEach(element => {
 
                                 notificationWindow += `
-                                    <a href="editvacation/${element.id}">
+                                    <a href="manager/editvacation/${element.id}">
                                         <div class="desc">
                                             <div class="details">
                                                 <p style="font-size:12px;color:black;">${element.name} ${element.last_name} send request</p>

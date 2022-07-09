@@ -163,7 +163,7 @@
 
                         let notificationNav = `
                         
-                        <a data-toggle="dropdown" class="dropdown-toggle" id="notification" href="index.html#">
+                        <a data-toggle="dropdown" class="dropdown-toggle" id="notification">
                             ${(response.count > 0) ? `<i class="fa fa-bell"></i><span class="badge bg-theme" id="notification_num">${response.count}</span>` : `<i class="fa fa-bell-o"></i>`}
                         </a>
                         
@@ -178,7 +178,7 @@
 
                             notificationNav += `
                                 <li>
-                                    <a href="editvacation/${element.id}">
+                                    <a href="admin/editvacation/${element.id}">
                                         <span class="subject">
                                         <span class="from">${element.name} ${element.last_name} send request</span>
                                         </span>
@@ -195,7 +195,7 @@
                         notificationNav += `
                         
                             <li>
-                                <a href="allvacations">See all vacations</a>
+                                <a href="admin/allvacations">See all vacations</a>
                             </li>
                         </ul>
 

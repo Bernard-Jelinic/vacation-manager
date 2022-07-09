@@ -67,6 +67,7 @@ Route::group(['prefix'=>'admin', 'middleware'=>['isAdmin','auth','PreventBackHis
     Route::post('manageemployee/delete/{id}',[AdminController::class,'deleteemployee'])->name('deleteemployee');
 
     Route::get('allvacations',[AdminController::class,'allvacations'])->name('admin.allvacations');
+    //URLs For Named Routes
     Route::get('editvacation/{id}',[AdminController::class,'editvacation'])->name('admin.editvacation');
     Route::post('editvacation/{id}',[AdminController::class,'editvacation'])->name('admin.editvacation');
     Route::get('pendingvacations',[AdminController::class,'pendingvacations'])->name('admin.pendingvacations');
