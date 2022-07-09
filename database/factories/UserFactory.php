@@ -16,12 +16,13 @@ class UserFactory extends Factory
     public function definition()
     {
         $name = $this->faker->firstname;
+        $lower_name = strtolower($name);
         return [
             'name' => $name,
             'last_name' => $this->faker->lastname,
-            'email' => $name . '@gmail.com',
+            'email' => $lower_name . '@gmail.com',
             'email_verified_at' => now(),
-            'password' => Hash::make($name),
+            'password' => Hash::make($lower_name),
             'remember_token' => Str::random(10),
         ];
     }
