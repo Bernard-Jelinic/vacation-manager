@@ -1,4 +1,4 @@
-@extends('dashboards.users.index')
+@extends('dashboards.employees.index')
 
 @section('applyvacation')
 

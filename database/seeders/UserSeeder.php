@@ -16,7 +16,7 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        $roles_arr = ['manager', 'user'];
+        $roles_arr = ['manager', 'employee'];
 
         User::factory()->create([
             'role' => 'admin',

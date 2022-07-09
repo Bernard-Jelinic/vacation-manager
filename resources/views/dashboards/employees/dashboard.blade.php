@@ -1,4 +1,4 @@
-@extends('dashboards.users.index')
+@extends('dashboards.employees.index')
 
 @section('dashboard')
 
@@ -10,7 +10,7 @@
 
                 $.ajax({
                     type: "GET",
-                    url: "{{url('user/fetchnotification')}}",
+                    url: "{{url('employee/fetchnotification')}}",
                     dataType: "json",
                     success: function(response){
 
@@ -20,7 +20,7 @@
                             response.notifications.forEach(element => {
 
                                 notificationWindow += `
-                                    <a href="historyvacations">
+                                    <a href="{{ route('historyvacations') }}">
                                         <div class="desc">
                                             <div class="details">
                                                 <p style="font-size:12px;color:black;">The request created on ${element.formated_created_at} changed its status</p>
@@ -50,7 +50,7 @@
 
 <div class="row">
     <div class="col-lg-9 main-chart">
-    <h1>Hello user {{Auth::user()->name}}, welcome to the vacation manager</h1>
+    <h1>Hello employee {{Auth::user()->name}}, welcome to the vacation manager</h1>
     </div>
     
     

@@ -31,8 +31,9 @@ class RedirectIfAuthenticated
             elseif( Auth::guard($guard)->check() && Auth::user()->role == 'manager'){
                 return redirect()->route('manager.dashboard');
             }
-            elseif( Auth::guard($guard)->check() && Auth::user()->role == 'user'){
-                return redirect()->route('user.dashboard');
+            elseif( Auth::guard($guard)->check() && Auth::user()->role == 'employee'){
+                // dd('došao do rute');
+                return redirect()->route('employee.dashboard');
             }
         }
 

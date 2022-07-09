@@ -20,7 +20,7 @@ class VacationFactory extends Factory
             'status' => $this->faker->numberBetween(0, 2),
             'admin_read' => $this->faker->boolean(),
             'manager_read' => $this->faker->boolean(),
-            'user_notified' => $this->faker->boolean(),
+            'employee_notified' => $this->faker->boolean(),
         ];
     }
 }

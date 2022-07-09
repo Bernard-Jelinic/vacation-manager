@@ -1,11 +1,11 @@
-@extends('dashboards.users.index')
+@extends('dashboards.employees.index')
 
 @section('userprofile')
 
     <div class="container-fluid col-lg-5">
         <form method="post" enctype="multipart/form-data"><br>
 
-            <h3>User Profile</h3><br>
+            <h3>Employee Profile</h3><br>
 
             <div class="form-group">
                 <label>Name</label>

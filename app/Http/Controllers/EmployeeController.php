@@ -6,8 +6,9 @@ use App\Models\User;
 use App\Models\Vacation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
-class UserController extends Controller
+class EmployeeController extends Controller
 {
 
     function fetchnotification(User $user, Vacation $vacation){
@@ -29,7 +30,7 @@ class UserController extends Controller
 
     function index(){
 
-        return view('dashboards.users.dashboard');
+        return view('dashboards.employees.dashboard');
 
     }
 
@@ -75,13 +76,13 @@ class UserController extends Controller
 
             $user->editUser($data, $id);
 
-            return redirect('user/userprofile');
+            return redirect('employee/userprofile');
 
         }
 
         $user = $user->userprofile($id);
 
-        return view('dashboards.users.userprofile',['user' => $user[0]]);
+        return view('dashboards.employees.userprofile',['user' => $user[0]]);
 
     }
 
@@ -108,15 +109,15 @@ class UserController extends Controller
                 'status' => 0,
                 'admin_read' => 0,
                 'manager_read' => 0,
-                'user_notified' => 0,
+                'employee_notified' => 0,
                 'user_id' => Auth::user()->id,
             ]);
 
-            return redirect('user/');
+            return redirect('employee/');
             
         }
 
-        return view('dashboards.users.applyvacation');
+        return view('dashboards.employees.applyvacation');
 
     }
 
@@ -125,13 +126,13 @@ class UserController extends Controller
         $user_id = Auth::user()->id;
 
         // because user is read all the notifications
-        $data['user_notified'] = 1;
+        $data['employee_notified'] = 1;
 
         $vacation->historyVacations($data, $user_id);
 
         $vacation_datas = $vacation->showHistoryvacations($user_id);
 
-        return view('dashboards.users.historyvacations', ['vacation_datas' => $vacation_datas]);
+        return view('dashboards.employees.historyvacations', ['vacation_datas' => $vacation_datas]);
 
     }
 

@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ManagerController;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\EmployeeController;
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -92,16 +92,16 @@ Route::group(['prefix'=>'manager', 'middleware'=>['isManager','auth','PreventBac
     
 });
 
-Route::group(['prefix'=>'user', 'middleware'=>['isUser','auth','PreventBackHistory']], function(){
+Route::group(['prefix'=>'employee', 'middleware'=>['isEmployee','auth','PreventBackHistory']], function(){
 
-    Route::get('',[UserController::class,'index'])->name('user.dashboard');
-    Route::get('fetchnotification',[UserController::class,'fetchnotification']);
+    Route::get('',[EmployeeController::class,'index'])->name('employee.dashboard');
+    Route::get('fetchnotification',[EmployeeController::class,'fetchnotification']);
 
-    Route::get('userprofile',[UserController::class,'userprofile'])->name('user.userprofile');
-    Route::post('userprofile',[UserController::class,'userprofile'])->name('user.userprofile');
+    Route::get('userprofile',[EmployeeController::class,'userprofile'])->name('employee.userprofile');
+    Route::post('userprofile',[EmployeeController::class,'userprofile'])->name('employee.userprofile');
 
-    Route::get('applyvacation',[UserController::class,'applyvacation'])->name('applyvacation');
-    Route::post('applyvacation',[UserController::class,'applyvacation'])->name('applyvacation');
-    Route::get('historyvacations',[UserController::class,'historyvacations'])->name('historyvacations');
+    Route::get('applyvacation',[EmployeeController::class,'applyvacation'])->name('applyvacation');
+    Route::post('applyvacation',[EmployeeController::class,'applyvacation'])->name('applyvacation');
+    Route::get('historyvacations',[EmployeeController::class,'historyvacations'])->name('historyvacations');
     
 });

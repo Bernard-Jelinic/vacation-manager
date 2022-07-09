@@ -12,7 +12,7 @@
                 <div class="fa fa-bars tooltips" data-placement="right" data-original-title="Toggle Navigation"></div>
             </div>
             <!--logo start-->
-            <a href="{{ route('admin.dashboard') }}" class="logo"><b>Vacation manager</b></a>
+            <a href="{{ route('employee.dashboard') }}" class="logo"><b>Vacation manager</b></a>
             <!--logo end-->
             <div class="nav notify-row" id="top_menu">
                 <!--  notification start -->
@@ -55,14 +55,14 @@
                     <h5 class="centered">{{Auth::user()->name . ' ' . Auth::user()->last_name }}</h5>
 
                     <li class="sub-menu">
-                        <a href="{{ route('user.dashboard') }}">
+                        <a href="{{ route('employee.dashboard') }}">
                             <i class="fa fa-home"></i>
                             <span>Home</span>
                         </a>
                     </li>
 
                     <li class="sub-menu">
-                        <a href="{{ route('user.userprofile') }}">
+                        <a href="{{ route('employee.userprofile') }}">
                             <i class="fa fa-user"></i>
                             <span>User profile</span>
                         </a>
@@ -122,13 +122,13 @@
 
                 $.ajax({
                     type: "GET",
-                    url: "{{url('user/fetchnotification')}}",
+                    url: "{{url('employee/fetchnotification')}}",
                     dataType: "json",
                     success: function(response){
 
                         let notificationNav = `
                         
-                        <a data-toggle="dropdown" class="dropdown-toggle" id="notification" href="index.html#">
+                        <a data-toggle="dropdown" class="dropdown-toggle" id="notification">
                             ${(response.count > 0) ? `<i class="fa fa-bell"></i><span class="badge bg-theme" id="notification_num">${response.count}</span>` : `<i class="fa fa-bell-o"></i>`}
                         </a>
                         
@@ -143,7 +143,7 @@
 
                             notificationNav += `
                                 <li>
-                                    <a href="historyvacations">
+                                    <a href="{{ route('historyvacations') }}">
                                         <span class="subject">
                                         <span class="from">The request created on ${element.formated_created_at}</span>
                                         </span>
@@ -160,7 +160,7 @@
                         notificationNav += `
                         
                             <li>
-                                <a href="historyvacations">See all vacations</a>
+                                <a href="{{ route('historyvacations') }}">See all vacations</a>
                             </li>
                         </ul>
 

@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Auth;
 
-class isUserMiddleware
+class isEmployeeMiddleware
 {
     /**
      * Handle an incoming request.
@@ -18,7 +18,7 @@ class isUserMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        if( Auth::check() && Auth::user()->role == 'user'){
+        if( Auth::check() && Auth::user()->role == 'employee'){
             return $next($request);
         }else{
             return redirect()->route('login');

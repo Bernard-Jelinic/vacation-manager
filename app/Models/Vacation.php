@@ -21,7 +21,7 @@ class Vacation extends Model
         'status',
         'admin_read',
         'manager_read',
-        'user_notified',
+        'employee_notified',
         'user_id'
     ];
 
@@ -59,7 +59,7 @@ class Vacation extends Model
 
         $datas = $this::select('vacations.id', 'vacations.created_at', 'users.name', 'users.last_name')
                 ->where('status', '!=', 0)
-                ->where('user_notified', '=', 0)
+                ->where('employee_notified', '=', 0)
                 ->where('user_id', '=', $id)
                 ->join('users', 'vacations.user_id', '=', 'users.id')
                 ->get();
@@ -116,7 +116,7 @@ class Vacation extends Model
         
         if ($status == 'all') {
 
-            $vacation_datas = $this::select('vacations.id', 'vacations.depart', 'vacations.return', 'vacations.created_at', 'vacations.user_notified', 'vacations.status', 'users.name', 'users.last_name')
+            $vacation_datas = $this::select('vacations.id', 'vacations.depart', 'vacations.return', 'vacations.created_at', 'vacations.employee_notified', 'vacations.status', 'users.name', 'users.last_name')
                 ->where('department_id', '=', $department_id)
                 ->where('role', '=', 'user')
                 ->join('users', 'vacations.user_id', '=', 'users.id')
@@ -138,7 +138,7 @@ class Vacation extends Model
 
             }
 
-            $vacation_datas = $this::select('vacations.id', 'vacations.depart', 'vacations.return', 'vacations.created_at', 'vacations.user_notified', 'vacations.status', 'users.name', 'users.last_name')
+            $vacation_datas = $this::select('vacations.id', 'vacations.depart', 'vacations.return', 'vacations.created_at', 'vacations.employee_notified', 'vacations.status', 'users.name', 'users.last_name')
                 ->where('department_id', '=', $department_id)
                 ->where('role', '=', 'user')
                 ->where('vacations.status', '=', $get_status)

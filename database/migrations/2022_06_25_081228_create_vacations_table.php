@@ -20,7 +20,7 @@ class CreateVacationsTable extends Migration
             $table->integer('status')->nullable();
             $table->integer('admin_read')->nullable();
             $table->integer('manager_read')->nullable();
-            $table->integer('user_notified')->nullable();
+            $table->integer('employee_notified')->nullable();
             $table->integer('user_id')->nullable();
             $table->timestamps();
         });

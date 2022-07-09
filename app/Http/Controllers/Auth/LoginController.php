@@ -33,11 +33,11 @@ class LoginController extends Controller
           if( Auth()->user()->role == 'admin'){
               return route('admin.dashboard');
           }
-          elseif( Auth()->user() == 'manager'){
+          elseif( Auth()->user()->role == 'manager'){
               return route('manager.dashboard');
           }
-          elseif( Auth()->user() == 'user'){
-              return route('user.dashboard');
+          elseif( Auth()->user()->role == 'employee'){
+              return route('employee.dashboard');
           }
       }
 
@@ -67,8 +67,8 @@ class LoginController extends Controller
         elseif( auth()->user()->role == 'manager' ){
             return redirect()->route('manager.dashboard');
         }
-        elseif( auth()->user()->role == 'user' ){
-            return redirect()->route('user.dashboard');
+        elseif( auth()->user()->role == 'employee' ){
+            return redirect()->route('employee.dashboard');
         }
 
        }else{

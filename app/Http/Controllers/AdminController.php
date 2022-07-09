@@ -391,7 +391,7 @@ class AdminController extends Controller
             $data['updated_at'] = date("Y-m-d H:i:s");
             $data['status'] = $req->input('status');
             $data['admin_read'] = 1;
-            $data['user_notified'] = 0;
+            $data['employee_notified'] = 0;
 
             $vacation->editVacation($data, $id);
 
