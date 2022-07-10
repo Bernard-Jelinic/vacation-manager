@@ -86,7 +86,8 @@
                         </a>
                         <ul class="sub">
                             <li><a href="{{route('addemployee')}}">Add Employee</a></li>
-                            <li><a href="{{route('manageemployee')}}">Manage Employee</a></li>
+                            {{-- <li><a href="{{route('manageemployee')}}">Manage Employee</a></li> --}}
+                            <li><a href="{{route('employees.index')}}">Manage Employee</a></li>
                         </ul>
                     </li>
                     
@@ -131,7 +132,8 @@
                 @yield('userprofile')
 
                 @yield('addemployee')
-                @yield('manageemployee')
+                {{-- @yield('manageemployee') --}}
+                @yield('employees.index')
                 @yield('editemployee')
 
                 @yield('adddepartment')

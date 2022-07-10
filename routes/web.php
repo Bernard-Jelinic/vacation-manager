@@ -1,12 +1,13 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
-use App\Http\Controllers\Auth\RegisterController;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ManagerController;
 use App\Http\Controllers\EmployeeController;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Auth\RegisterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -58,13 +59,21 @@ Route::group(['prefix'=>'admin', 'middleware'=>['isAdmin','auth','PreventBackHis
     Route::get('managedepartments/edit/{id}',[AdminController::class,'editdepartment'])->name('editdepartment');
     Route::post('managedepartments/edit/{id}',[AdminController::class,'editdepartment'])->name('editdepartment');
     Route::post('managedepartments/delete/{id}',[AdminController::class,'deletedepartment'])->name('deletedepartment');
+    
 
     Route::get('addemployee',[AdminController::class,'addemployee'])->name('addemployee');
+    // Route::get('addemployee',[AdminController::class,'addemployee'])->name('addemployee');
+
     Route::post('addemployee',[AdminController::class,'addemployee'])->name('addemployee');
-    Route::get('manageemployee',[AdminController::class,'manageemployee'])->name('manageemployee');
+    // Route::get('manageemployee',[AdminController::class,'manageemployee'])->name('manageemployee');
+
+    Route::get('employees',[UserController::class,'index'])->name('employees.index');
+
+    
     Route::get('manageemployee/edit/{id}',[AdminController::class,'editemployee'])->name('editemployee');
     Route::post('manageemployee/edit/{id}',[AdminController::class,'editemployee'])->name('editemployee');
     Route::post('manageemployee/delete/{id}',[AdminController::class,'deleteemployee'])->name('deleteemployee');
+    // Route::post('employees/{employee}',[UserController::class,'destroy'])->name('employee.destroy');
 
     Route::get('allvacations',[AdminController::class,'allvacations'])->name('admin.allvacations');
     //URLs For Named Routes

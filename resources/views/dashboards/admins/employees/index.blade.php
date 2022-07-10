@@ -1,6 +1,6 @@
 @extends('dashboards.admins.index')
 
-@section('manageemployee')
+@section('employees.index')
 
     <div class="container-fluid">
         <br>
